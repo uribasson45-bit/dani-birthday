@@ -11,8 +11,6 @@ body {
   font-family: Arial, sans-serif;
   text-align: center;
   transition: all 0.5s ease;
-
-  /* 🎨 רקע פתיחה */
   background: linear-gradient(to bottom, #ffb6c1 50%, #ffffff 50%);
 }
 
@@ -49,7 +47,26 @@ button {
   border-radius: 10px;
 }
 
-input, textarea, select {
+.pageList {
+  margin-top: 10px;
+  text-align: right;
+  max-height: 150px;
+  overflow-y: auto;
+  border-top: 1px solid #ddd;
+  padding-top: 10px;
+}
+
+.pageItem {
+  padding: 6px;
+  cursor: pointer;
+  border-bottom: 1px solid #eee;
+}
+
+.pageItem:hover {
+  background: #f2f2f2;
+}
+
+input, textarea {
   width: 90%;
   margin: 5px;
   padding: 8px;
@@ -74,13 +91,17 @@ input, textarea, select {
 </div>
 
 <div>
+<!-- כפתורי ניווט (הוחלפו לפי בקשתך) -->
 <button onclick="prev()">⬅ קודם</button>
 <button onclick="next()">הבא ➡</button>
+
 <button onclick="addPage()">➕ דף</button>
 <button onclick="toggleAdmin()">🔐 אדמין</button>
 </div>
 
 <div class="admin" id="adminPanel">
+
+<h3>עריכת דף נוכחי</h3>
 
 <input id="titleInput" placeholder="כותרת">
 <textarea id="textInput" placeholder="טקסט"></textarea>
@@ -93,13 +114,12 @@ input, textarea, select {
 <label>סאונד</label>
 <input type="file" onchange="loadAudio(event)">
 
-<label>רקע</label>
-<input type="file" onchange="setBg(event)">
-
 <label>תזמון</label>
 <input id="timeInput" placeholder="YYYY-MM-DD HH:MM">
 
-<button onclick="save()">💾 שמור</button>
+<button onclick="save()">💾 שמור דף</button>
+
+<div class="pageList" id="pageList"></div>
 
 </div>
 
@@ -131,7 +151,7 @@ setInterval(()=>{
 document.getElementById("clock").innerText = new Date().toLocaleString();
 },1000);
 
-/* תזמון */
+/* בדיקת זמן */
 function isOpen(p){
 if(!p.time) return true;
 return new Date() >= new Date(p.time);
@@ -141,30 +161,32 @@ return new Date() >= new Date(p.time);
 function render(){
 
 let p = pages[index];
+let locked = !isOpen(p) && !admin;
 
-if(!isOpen(p) && !admin){
-document.getElementById("title").innerText = "⏳ עדיין לא פתוח";
-document.getElementById("text").innerText = "תחכה לזמן שנקבע";
-return;
-}
+/* אם נעול - רק הודעה */
+if(locked){
+document.getElementById("title").innerText = "⏳ דף נעול עדיין";
+document.getElementById("text").innerText = "הדף ייפתח בזמן שנקבע";
+document.getElementById("img").style.display = "none";
+document.getElementById("audio").style.display = "none";
+document.body.style.background = "#ddd";
+} 
+else {
 
-/* רקע */
-if(index !== 0){
 document.body.style.background = p.bg ? `url(${p.bg})` : p.color;
-}
 
 document.getElementById("title").innerText = p.title;
 document.getElementById("text").innerText = p.text;
 
-/* תמונה */
 let img = document.getElementById("img");
 if(p.img){ img.src = p.img; img.style.display="block"; }
 else img.style.display="none";
 
-/* סאונד */
 let audio = document.getElementById("audio");
 if(p.audio){ audio.src = p.audio; audio.style.display="block"; }
 else audio.style.display="none";
+
+}
 
 /* אדמין */
 document.getElementById("adminPanel").style.display = admin ? "block" : "none";
@@ -173,9 +195,26 @@ if(admin){
 titleInput.value = p.title;
 textInput.value = p.text;
 colorInput.value = p.color;
-timeInput.value = p.time;
+timeInput.value = p.time || "";
+renderPageList();
+}
 }
 
+/* רשימת דפים */
+function renderPageList(){
+let list = document.getElementById("pageList");
+list.innerHTML = "";
+
+pages.forEach((p,i)=>{
+let div = document.createElement("div");
+div.className = "pageItem";
+div.innerText = (i+1) + ". " + (p.title || "ללא כותרת");
+div.onclick = ()=>{
+index = i;
+render();
+};
+list.appendChild(div);
+});
 }
 
 /* אדמין */
@@ -229,16 +268,6 @@ function loadAudio(e){
 let r = new FileReader();
 r.onload = ev=>{
 pages[index].audio = ev.target.result;
-saveData();
-render();
-};
-r.readAsDataURL(e.target.files[0]);
-}
-
-function setBg(e){
-let r = new FileReader();
-r.onload = ev=>{
-pages[index].bg = ev.target.result;
 saveData();
 render();
 };
