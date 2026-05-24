@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>מסע יום הולדת ❤️</title>
+
   <style>
     body {
       margin: 0;
@@ -11,6 +12,9 @@
       transition: all 0.6s ease;
       color: #222;
       text-align: center;
+
+      /* 🎨 רקע פתיחה ורוד-לבן */
+      background: linear-gradient(to bottom, #ffb6c1 50%, #ffffff 50%);
       background-size: cover;
       background-position: center;
     }
@@ -24,6 +28,7 @@
 
     .container {
       padding: 15px;
+      animation: fadeIn 1s ease;
     }
 
     .card {
@@ -32,6 +37,7 @@
       padding: 20px;
       border-radius: 16px;
       box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      animation: slideUp 0.8s ease;
     }
 
     img {
@@ -75,9 +81,28 @@
       margin: 5px;
       border-radius: 50%;
       background: pink;
+      animation: float 3s infinite ease-in-out;
+    }
+
+    /* ✨ אנימציות (התוסף) */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(40px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+      100% { transform: translateY(0); }
     }
   </style>
 </head>
+
 <body>
 
 <div class="topbar">
@@ -109,13 +134,13 @@
     <label>צבע רקע</label>
     <input id="colorInput" placeholder="#ff9a9e" />
 
-    <label>תמונה (קובץ מהמחשב)</label>
+    <label>תמונה</label>
     <input type="file" onchange="loadImage(event)" />
 
     <label>סאונד MP3</label>
     <input type="file" accept="audio/*" onchange="loadAudio(event)" />
 
-    <label>רקע (תמונה לשולחן עבודה)</label>
+    <label>רקע</label>
     <input type="file" onchange="setBg(event)" />
 
     <label>גופן</label>
@@ -126,14 +151,13 @@
       <option value="Georgia">Georgia</option>
     </select>
 
-    <label>תזמון (YYYY-MM-DD HH:MM)</label>
+    <label>תזמון</label>
     <input id="timeInput" placeholder="2026-05-24 18:00" />
 
     <button onclick="save()">💾 שמור דף</button>
 
     <h4>צורות</h4>
     <button onclick="addShape()">➕ צורה</button>
-
   </div>
 
 </div>
@@ -166,7 +190,11 @@ updateClock();
 function render(){
   const p = pages[index];
 
-  document.body.style.background = p.bg ? `url(${p.bg})` : p.color;
+  /* 🎯 לא לדרוס את הרקע בעמוד הראשון */
+  if(index !== 0){
+    document.body.style.background = p.bg ? `url(${p.bg})` : p.color;
+  }
+
   document.body.style.fontFamily = p.font || "Arial";
 
   document.getElementById("title").innerText = p.title;
@@ -180,23 +208,13 @@ function render(){
   if(p.audio){ audio.src = p.audio; audio.style.display="block"; }
   else audio.style.display="none";
 
-  if(admin){
-    document.getElementById("adminPanel").style.display="block";
-    document.getElementById("titleInput").value = p.title;
-    document.getElementById("textInput").value = p.text;
-    document.getElementById("colorInput").value = p.color;
-    document.getElementById("fontInput").value = p.font;
-    document.getElementById("timeInput").value = p.time;
-  } else {
-    document.getElementById("adminPanel").style.display="none";
-  }
+  document.getElementById("adminPanel").style.display = admin ? "block" : "none";
 }
 
 function toggleAdmin(){
   const pass = prompt("סיסמה:");
   if(pass === "1234"){
     admin = !admin;
-    alert(admin ? "אדמין פעיל" : "יציאה מאדמין");
     render();
   } else alert("שגיאה");
 }
@@ -244,6 +262,9 @@ function addShape(){
 function next(){ if(index < pages.length-1) index++; render(); }
 function prev(){ if(index > 0) index--; render(); }
 
-function autoTime(){
-  const now = new Date();
-  const t = now.getTime();
+render();
+
+</script>
+
+</body>
+</html>
