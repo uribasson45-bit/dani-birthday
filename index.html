@@ -26,18 +26,18 @@ margin:15px;
 padding:15px;
 border-radius:15px;
 position:relative;
+height:260px;
 overflow:hidden;
-height:250px;
 }
 
 #img{
 position:absolute;
 top:50%;
 left:50%;
-transform:translate(-50%,-50%) scale(1);
+transform:translate(-50%,-50%);
 max-width:90%;
-cursor:grab;
 touch-action:none;
+user-select:none;
 }
 
 button{
@@ -62,12 +62,16 @@ border-top:1px solid #ddd;
 }
 
 .pageItem{
-padding:5px;
+padding:6px;
 border-bottom:1px solid #eee;
 cursor:pointer;
 }
 
-input,textarea{width:90%;}
+input,textarea{
+width:90%;
+margin:5px;
+padding:8px;
+}
 </style>
 </head>
 
@@ -84,7 +88,6 @@ input,textarea{width:90%;}
 </div>
 
 <div>
-<!-- חצים לפי בקשה -->
 <button onclick="prev()">➡ קודם</button>
 <button onclick="next()">הבא ⬅</button>
 
@@ -92,14 +95,14 @@ input,textarea{width:90%;}
 <button onclick="toggleAdmin()">🔐 אדמין</button>
 </div>
 
-<div class="admin" id="admin">
+<div class="admin" id="adminPanel">
 
 <h3>עריכת דף</h3>
 
-<input id="titleInput">
-<textarea id="textInput"></textarea>
+<input id="titleInput" placeholder="כותרת">
+<textarea id="textInput" placeholder="טקסט"></textarea>
 
-<input id="colorInput" placeholder="צבע">
+<input id="colorInput" placeholder="צבע רקע">
 
 <label>תמונה</label>
 <input type="file" onchange="loadImage(event)">
@@ -107,24 +110,22 @@ input,textarea{width:90%;}
 <label>שיר</label>
 <input type="file" onchange="loadAudio(event)">
 
-<label>תזמון</label>
-<input id="timeInput">
-
 <button onclick="save()">💾 שמור</button>
 
 <div class="pageList" id="list"></div>
+
 </div>
 
 <script>
 
-let admin=false;
-let index=0;
+let admin = false;
+let index = 0;
 
-let pages=JSON.parse(localStorage.getItem("pages"))||[
+let pages = JSON.parse(localStorage.getItem("pages")) || [
 {
 title:"ברוכה הבאה ❤️",
 text:"זה רק מתחיל...",
-color:"#fff",
+color:"#ffffff",
 img:"",
 audio:"",
 x:0,
@@ -140,123 +141,159 @@ localStorage.setItem("pages",JSON.stringify(pages));
 
 /* שעון */
 setInterval(()=>{
-clock.innerText=new Date().toLocaleString();
+document.getElementById("clock").innerText=new Date().toLocaleString();
 },1000);
 
 /* רינדור */
 function render(){
 
-let p=pages[index];
+let p = pages[index];
 
-document.body.style.background=p.color;
+document.body.style.background = p.color;
 
-title.innerText=p.title;
-text.innerText=p.text;
+document.getElementById("title").innerText = p.title;
+document.getElementById("text").innerText = p.text;
 
-/* תמונה עם מיקום */
-img.src=p.img||"";
-img.style.display=p.img?"block":"none";
+/* תמונה */
+let img = document.getElementById("img");
 
-img.style.transform=`translate(-50%,-50%) translate(${p.x}px,${p.y}px) scale(${p.scale})`;
+if(p.img){
+img.src = p.img;
+img.style.display = "block";
+img.style.transform = `translate(-50%,-50%) translate(${p.x||0}px,${p.y||0}px) scale(${p.scale||1})`;
+}else{
+img.style.display = "none";
+}
 
 /* מוזיקה */
-audio.src=p.audio||"";
-if(p.audio) audio.play();
+let audio = document.getElementById("audio");
+if(p.audio){
+audio.src = p.audio;
+audio.play().catch(()=>{});
+}
 
 /* אדמין */
-adminDiv.style.display=admin?"block":"none";
+document.getElementById("adminPanel").style.display = admin ? "block" : "none";
 
 if(admin){
-titleInput.value=p.title;
-textInput.value=p.text;
-colorInput.value=p.color;
-timeInput.value=p.time||"";
+titleInput.value = p.title;
+textInput.value = p.text;
+colorInput.value = p.color;
 renderList();
 }
 }
 
-/* מנעול מעבר */
+/* בדיקת נעילה */
 function canMove(){
 return !pages[index].locked || admin;
 }
 
 /* ניווט */
 function next(){
-if(!canMove()) return alert("הדף נעול");
-if(index<pages.length-1){index++;render();}
+if(!canMove()) return alert("דף נעול");
+if(index < pages.length-1){
+index++;
+render();
+}
 }
 
 function prev(){
-if(index>0){index--;render();}
+if(index > 0){
+index--;
+render();
+}
 }
 
 /* נעילה */
 function toggleLock(){
-pages[index].locked=!pages[index].locked;
+pages[index].locked = !pages[index].locked;
 saveDB();
 render();
 }
 
 /* אדמין */
 function toggleAdmin(){
-let pass=prompt("סיסמה");
-if(pass==="1234"){admin=!admin;render();}
+let pass = prompt("סיסמה");
+
+if(pass === "1234"){
+admin = !admin;
+document.getElementById("adminPanel").style.display = admin ? "block" : "none";
+render();
+}else{
+alert("שגיאה בסיסמה");
+}
 }
 
 /* שמירה */
 function save(){
-pages[index].title=titleInput.value;
-pages[index].text=textInput.value;
-pages[index].color=colorInput.value;
-pages[index].time=timeInput.value;
+pages[index].title = titleInput.value;
+pages[index].text = textInput.value;
+pages[index].color = colorInput.value;
+
 saveDB();
 render();
 }
 
 /* דף חדש */
-function add(){
-pages.push({title:"חדש",text:"",color:"#fff",img:"",audio:"",x:0,y:0,scale:1,locked:false});
-index=pages.length-1;
+function addPage(){
+pages.push({
+title:"חדש",
+text:"",
+color:"#fff",
+img:"",
+audio:"",
+x:0,
+y:0,
+scale:1,
+locked:false
+});
+index = pages.length-1;
 saveDB();
 render();
 }
 
 /* תמונה */
 function loadImage(e){
-let r=new FileReader();
-r.onload=ev=>{
-pages[index].img=ev.target.result;
+let r = new FileReader();
+r.onload = ev=>{
+pages[index].img = ev.target.result;
 saveDB();
 render();
 };
 r.readAsDataURL(e.target.files[0]);
 }
 
-/* מוזיקה */
+/* שיר */
 function loadAudio(e){
-let r=new FileReader();
-r.onload=ev=>{
-pages[index].audio=ev.target.result;
+let r = new FileReader();
+r.onload = ev=>{
+pages[index].audio = ev.target.result;
 saveDB();
 render();
 };
 r.readAsDataURL(e.target.files[0]);
 }
 
-/* גרירה + זום תמונה (אדמין) */
-let dragging=false,startX=0,startY=0;
+/* גרירת תמונה */
+let dragging = false;
+let startX = 0;
+let startY = 0;
+
+const img = document.getElementById("img");
 
 img.addEventListener("pointerdown",(e)=>{
 if(!admin) return;
-dragging=true;
-startX=e.clientX-pages[index].x;
-startY=e.clientY-pages[index].y;
+dragging = true;
+startX = e.clientX - (pages[index].x||0);
+startY = e.clientY - (pages[index].y||0);
 });
 
 window.addEventListener("pointermove",(e)=>{
 if(!dragging) return;
-pages[index].x=e.clientX-startX;
-pages[index].y=e.clientY-startY;
+
+pages[index].x = e.clientX - startX;
+pages[index].y = e.clientY - startY;
+
 render();
 });
 
@@ -265,20 +302,26 @@ window.addEventListener("pointerup",()=>dragging=false);
 /* זום */
 img.addEventListener("wheel",(e)=>{
 if(!admin) return;
+
 e.preventDefault();
-pages[index].scale+=e.deltaY*-0.001;
-saveDB();
+pages[index].scale = (pages[index].scale||1) + (e.deltaY * -0.001);
+
 render();
 });
 
-/* רשימה */
+/* רשימת דפים */
 function renderList(){
-list.innerHTML="";
+let list = document.getElementById("list");
+list.innerHTML = "";
+
 pages.forEach((p,i)=>{
-let d=document.createElement("div");
-d.className="pageItem";
-d.innerText=(i+1)+" "+p.title;
-d.onclick=()=>{index=i;render();}
+let d = document.createElement("div");
+d.className = "pageItem";
+d.innerText = (i+1)+" "+p.title;
+d.onclick = ()=>{
+index = i;
+render();
+};
 list.appendChild(d);
 });
 }
