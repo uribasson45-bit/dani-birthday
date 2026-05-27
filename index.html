@@ -6,7 +6,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Birthday Story</title>
+<title>✦ Daniel Birthday Story ✦</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -21,51 +21,46 @@
   --text-muted:#A09070;
   --card-bg:rgba(255,255,255,0.06);
   --border:rgba(201,168,76,0.25);
-  --safe-bottom: env(safe-area-inset-bottom, 0px);
-  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom:env(safe-area-inset-bottom,0px);
+  --safe-top:env(safe-area-inset-top,0px);
 }
 html,body{
-  height:100%;
-  min-height:-webkit-fill-available;
-  overflow:hidden;
-  background:var(--navy-deep);
-  font-family:'Lato',sans-serif;
-  color:var(--text-light);
-  -webkit-text-size-adjust:100%;
-  text-size-adjust:100%;
+  height:100%;min-height:-webkit-fill-available;
+  overflow:hidden;background:var(--navy-deep);
+  font-family:'Lato',sans-serif;color:var(--text-light);
+  -webkit-text-size-adjust:100%;text-size-adjust:100%;
   -webkit-tap-highlight-color:transparent;
 }
+
 /* ─── STARS ─── */
 #stars{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
 .star{position:absolute;border-radius:50%;background:#fff;animation:twinkle var(--d,3s) infinite var(--delay,0s)}
 @keyframes twinkle{0%,100%{opacity:.15}50%{opacity:.8}}
 
 /* ─── VIEWER ─── */
-#app{
-  position:fixed;inset:0;z-index:1;display:flex;flex-direction:column;
-  padding-top:var(--safe-top);
-  padding-bottom:var(--safe-bottom);
-}
+#app{position:fixed;inset:0;z-index:1;display:flex;flex-direction:column;
+  padding-top:var(--safe-top);padding-bottom:var(--safe-bottom);}
+
 #progress-bar{display:flex;gap:6px;padding:16px 20px 8px;justify-content:center;flex-shrink:0}
-.prog-dot{flex:1;max-width:60px;height:3px;border-radius:2px;background:rgba(255,255,255,0.2);transition:background .3s;cursor:pointer}
+.prog-dot{flex:1;max-width:60px;height:3px;border-radius:2px;background:rgba(255,255,255,.2);transition:background .3s;cursor:pointer}
 .prog-dot.active{background:var(--gold)}
-.prog-dot.done{background:rgba(201,168,76,0.5)}
+.prog-dot.done{background:rgba(201,168,76,.5)}
+.prog-dot.is-locked{background:rgba(180,80,80,.35);cursor:not-allowed}
 
 #pages-wrap{flex:1;position:relative;overflow:hidden}
 .page{
   position:absolute;inset:0;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  padding:24px 20px;
+  padding:24px 60px 24px 20px;
   transition:transform .5s cubic-bezier(.77,0,.18,1),opacity .4s;
-  opacity:0;pointer-events:none;
-  transform:translateX(100%);
-  overflow-y:auto;
-  -webkit-overflow-scrolling:touch;
+  opacity:0;pointer-events:none;transform:translateX(100%);
+  overflow-y:auto;-webkit-overflow-scrolling:touch;
 }
 .page.active{opacity:1;pointer-events:all;transform:translateX(0)}
 .page.exit-left{transform:translateX(-100%);opacity:0}
 .page.exit-right{transform:translateX(100%);opacity:0}
 
+/* ─── TEXT ELEMENTS ─── */
 .el-text{text-align:center;max-width:560px;width:100%;margin:10px 0}
 .el-text h1{font-family:'Playfair Display',serif;font-size:clamp(26px,6vw,52px);font-weight:600;line-height:1.2;color:var(--gold-light);margin-bottom:10px}
 .el-text h2{font-family:'Playfair Display',serif;font-size:clamp(20px,4vw,36px);font-weight:400;font-style:italic;color:var(--rose);margin-bottom:8px}
@@ -73,172 +68,212 @@ html,body{
 .el-text .subtitle{font-size:13px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:14px;font-weight:700}
 
 /* ─── IMAGE ELEMENT ─── */
-.el-image{
-  max-width:min(480px,90vw);
-  border-radius:12px;overflow:hidden;margin:10px 0;
-  box-shadow:0 20px 60px rgba(0,0,0,.5),0 0 0 1px var(--border);
-  position:relative;
-  transition:transform .2s;
-}
-.el-image img{
-  width:100%;height:100%;object-fit:cover;display:block;
-  transition:transform .3s;
-}
-/* Image resize controls in viewer */
-.el-image .img-resize-bar{
-  display:flex;align-items:center;justify-content:center;gap:8px;
-  padding:8px;background:rgba(13,17,36,.7);
-  border-top:1px solid var(--border);
-}
-.img-resize-btn{
-  background:var(--card-bg);border:1px solid var(--border);color:var(--gold);
+.el-image{max-width:min(480px,90vw);border-radius:12px;overflow:hidden;margin:10px 0;
+  box-shadow:0 20px 60px rgba(0,0,0,.5),0 0 0 1px var(--border);position:relative;transition:transform .2s}
+.el-image img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .3s}
+.el-image .img-resize-bar{display:flex;align-items:center;justify-content:center;gap:8px;
+  padding:8px;background:rgba(13,17,36,.7);border-top:1px solid var(--border)}
+.img-resize-btn{background:var(--card-bg);border:1px solid var(--border);color:var(--gold);
   border-radius:6px;width:32px;height:32px;font-size:16px;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-  transition:background .2s;touch-action:manipulation;
-  flex-shrink:0;
-}
+  display:flex;align-items:center;justify-content:center;transition:background .2s;
+  touch-action:manipulation;flex-shrink:0}
 .img-resize-btn:hover{background:rgba(201,168,76,.15)}
 .img-size-label{font-size:11px;color:var(--text-muted);min-width:36px;text-align:center}
-.el-image .img-placeholder{
-  width:100%;height:220px;background:var(--card-bg);
+.el-image .img-placeholder{width:100%;height:220px;background:var(--card-bg);
   border:1px dashed var(--border);border-radius:12px;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  color:var(--text-muted);font-size:13px;gap:8px;
-}
+  color:var(--text-muted);font-size:13px;gap:8px}
 .el-image .img-placeholder svg{opacity:.4}
 
 /* ─── AUDIO ELEMENT ─── */
 .el-audio{background:var(--card-bg);border:1px solid var(--border);border-radius:14px;padding:16px 20px;max-width:400px;width:100%;margin:10px 0}
 .el-audio .audio-title{font-size:13px;color:var(--gold);margin-bottom:12px;font-weight:700;letter-spacing:1px}
 .el-audio .audio-controls{display:flex;align-items:center;gap:12px}
-.el-audio .audio-btn{width:42px;height:42px;border-radius:50%;background:var(--gold);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .15s,background .2s;min-width:44px;min-height:44px;}
+.el-audio .audio-btn{width:42px;height:42px;border-radius:50%;background:var(--gold);border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .15s,background .2s;min-width:44px;min-height:44px}
 .el-audio .audio-btn:hover{background:var(--gold-light);transform:scale(1.08)}
 .el-audio .audio-progress-wrap{flex:1;display:flex;flex-direction:column;gap:6px}
-.el-audio .audio-track{width:100%;height:4px;-webkit-appearance:none;appearance:none;background:rgba(255,255,255,0.15);border-radius:2px;cursor:pointer;outline:none;padding:8px 0;margin:-8px 0;}
+.el-audio .audio-track{width:100%;height:4px;-webkit-appearance:none;appearance:none;background:rgba(255,255,255,.15);border-radius:2px;cursor:pointer;outline:none;padding:8px 0;margin:-8px 0}
 .el-audio .audio-track::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--gold);cursor:pointer}
 .el-audio .audio-time{font-size:11px;color:var(--text-muted);display:flex;justify-content:space-between}
 .el-audio .audio-restart{background:none;border:1px solid var(--border);color:var(--text-muted);border-radius:8px;padding:8px 12px;font-size:13px;cursor:pointer;transition:color .2s,border-color .2s;min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center}
 .el-audio .audio-restart:hover{color:var(--gold);border-color:var(--gold)}
 
-/* ─── VIDEO ELEMENT ─── */
-.el-video{
-  max-width:min(520px,92vw);
-  border-radius:12px;overflow:hidden;margin:10px 0;
-  box-shadow:0 20px 60px rgba(0,0,0,.6),0 0 0 1px var(--border);
-  background:#000;
-}
-.el-video video{
-  width:100%;max-height:55vh;display:block;
-  border-radius:12px;
-  /* FIX: proper rendering on iOS Safari */
-  -webkit-playsinline:true;
-}
-.el-video .video-title{
-  font-size:12px;color:var(--gold);padding:8px 12px;
-  background:rgba(13,17,36,.7);letter-spacing:1px;font-weight:700;
-  border-top:1px solid var(--border);
-}
-.el-video .video-placeholder{
-  width:100%;height:200px;background:var(--card-bg);
+/* ─── VIDEO / YOUTUBE ELEMENT ─── */
+.el-video{max-width:min(520px,92vw);border-radius:12px;overflow:hidden;margin:10px 0;
+  box-shadow:0 20px 60px rgba(0,0,0,.6),0 0 0 1px var(--border);background:#000}
+.el-video video{width:100%;max-height:55vh;display:block;border-radius:12px;object-fit:contain}
+.el-video .yt-wrap{position:relative;width:100%;padding-bottom:56.25%;background:#000}
+.el-video .yt-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:none}
+.el-video .video-title{font-size:12px;color:var(--gold);padding:8px 12px;
+  background:rgba(13,17,36,.7);letter-spacing:1px;font-weight:700;border-top:1px solid var(--border)}
+.el-video .video-placeholder{width:100%;height:200px;background:var(--card-bg);
   border:1px dashed var(--border);border-radius:12px;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  color:var(--text-muted);font-size:13px;gap:10px;
-}
+  color:var(--text-muted);font-size:13px;gap:10px}
 
-/* Lock overlay */
-.lock-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(13,17,36,.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);z-index:10;gap:20px}
+/* ─── LOCK OVERLAY ─── */
+.lock-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:rgba(13,17,36,.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);z-index:10;gap:20px}
 .lock-icon{width:72px;height:72px;border:2px solid var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;animation:pulse-lock 2s infinite}
 @keyframes pulse-lock{0%,100%{box-shadow:0 0 0 0 rgba(201,168,76,.4)}50%{box-shadow:0 0 0 14px rgba(201,168,76,0)}}
 .lock-label{font-family:'Playfair Display',serif;font-size:22px;color:var(--gold-light)}
 .lock-hint{font-size:13px;color:var(--text-muted);letter-spacing:1px}
 
-/* Nav */
-#nav{display:flex;align-items:center;justify-content:space-between;padding:12px 20px 20px;flex-shrink:0;}
-.nav-btn{background:var(--card-bg);border:1px solid var(--border);color:var(--text-light);width:52px;height:52px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s,transform .15s;font-size:22px;touch-action:manipulation;}
+/* ─── NAV ─── */
+#nav{display:flex;align-items:center;justify-content:space-between;padding:12px 20px 20px;flex-shrink:0}
+.nav-btn{background:var(--card-bg);border:1px solid var(--border);color:var(--text-light);width:52px;height:52px;
+  border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:background .2s,transform .15s;font-size:22px;touch-action:manipulation}
 .nav-btn:hover:not(:disabled){background:rgba(201,168,76,.15);transform:scale(1.08)}
 .nav-btn:disabled{opacity:.3;cursor:default}
 #page-counter{font-size:13px;color:var(--text-muted);letter-spacing:1px}
 
-#admin-trigger{position:fixed;top:calc(12px + var(--safe-top));left:12px;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);cursor:pointer;z-index:5;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.2);transition:color .3s,border-color .3s;touch-action:manipulation;}
+/* ─── SIDE PROGRESS INDICATOR ─── */
+#side-progress{
+  position:fixed;right:10px;top:50%;transform:translateY(-50%);
+  z-index:4;display:flex;flex-direction:column;align-items:center;gap:7px;
+  padding:12px 7px;background:rgba(13,17,36,.6);border:1px solid var(--border);
+  border-radius:20px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  pointer-events:none;
+}
+.sp-pip{
+  width:7px;height:7px;border-radius:50%;
+  background:rgba(255,255,255,.18);transition:all .3s;flex-shrink:0;position:relative;
+}
+.sp-pip.sp-done{background:rgba(201,168,76,.45)}
+.sp-pip.sp-active{background:var(--gold);transform:scale(1.5);box-shadow:0 0 6px rgba(201,168,76,.7)}
+.sp-pip.sp-locked{background:rgba(180,70,70,.4);border:1px solid rgba(200,80,80,.5)}
+.sp-pip.sp-locked::after{content:'🔒';position:absolute;font-size:6px;left:50%;top:50%;transform:translate(-50%,-50%)}
+.sp-label{font-size:9px;color:var(--text-muted);letter-spacing:.5px;margin-top:3px;writing-mode:vertical-rl}
+
+/* ─── ADMIN TRIGGER ─── */
+#admin-trigger{position:fixed;top:calc(12px + var(--safe-top));left:12px;width:36px;height:36px;
+  border-radius:50%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);
+  cursor:pointer;z-index:5;display:flex;align-items:center;justify-content:center;
+  color:rgba(255,255,255,.2);transition:color .3s,border-color .3s;touch-action:manipulation}
 #admin-trigger:hover{color:var(--gold);border-color:var(--gold)}
 
 /* ─── ADMIN LOGIN ─── */
-#admin-login{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;background:rgba(13,17,36,.97);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);display:none}
+#admin-login{position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;
+  background:rgba(13,17,36,.97);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
 .login-card{background:var(--card-bg);border:1px solid var(--border);border-radius:20px;padding:40px 36px;max-width:360px;width:90%;text-align:center}
 .login-card h2{font-family:'Playfair Display',serif;font-size:28px;color:var(--gold-light);margin-bottom:8px}
 .login-card p{font-size:13px;color:var(--text-muted);margin-bottom:28px}
-.login-card input{width:100%;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:10px;padding:14px 18px;color:#fff;font-size:18px;text-align:center;letter-spacing:8px;outline:none;margin-bottom:16px;transition:border-color .2s}
+.login-card input{width:100%;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:10px;
+  padding:14px 18px;color:#fff;font-size:18px;text-align:center;letter-spacing:8px;
+  outline:none;margin-bottom:16px;transition:border-color .2s}
 .login-card input:focus{border-color:var(--gold)}
-.login-card .btn-primary{width:100%;padding:14px;background:var(--gold);color:var(--navy-deep);border:none;border-radius:10px;font-weight:700;font-size:15px;cursor:pointer;transition:background .2s;touch-action:manipulation}
+.login-card .btn-primary{width:100%;padding:14px;background:var(--gold);color:var(--navy-deep);
+  border:none;border-radius:10px;font-weight:700;font-size:15px;cursor:pointer;transition:background .2s;touch-action:manipulation}
 .login-card .btn-primary:hover{background:var(--gold-light)}
 .login-card .error{color:var(--rose);font-size:13px;margin-top:8px}
 
 /* ─── ADMIN PANEL ─── */
 #admin-panel{position:fixed;inset:0;z-index:90;display:none;flex-direction:column;background:var(--navy-deep)}
-.admin-topbar{background:rgba(26,31,58,.95);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;gap:12px;flex-wrap:wrap}
+.admin-topbar{background:rgba(26,31,58,.95);border-bottom:1px solid var(--border);padding:12px 20px;
+  display:flex;align-items:center;justify-content:space-between;flex-shrink:0;gap:12px;flex-wrap:wrap}
 .admin-topbar h1{font-family:'Playfair Display',serif;font-size:20px;color:var(--gold);flex:1;min-width:120px}
-.admin-topbar .btn-sm{padding:8px 16px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--text-light);transition:background .2s;touch-action:manipulation;white-space:nowrap}
+.admin-topbar .btn-sm{padding:8px 16px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;
+  border:1px solid var(--border);background:transparent;color:var(--text-light);transition:background .2s;
+  touch-action:manipulation;white-space:nowrap}
 .admin-topbar .btn-sm:hover{background:var(--card-bg)}
 .admin-topbar .btn-sm.danger{border-color:var(--rose);color:var(--rose)}
 .admin-topbar .btn-sm.primary{background:var(--gold);color:var(--navy-deep);border-color:var(--gold)}
 .admin-topbar .btn-sm.primary:hover{background:var(--gold-light)}
 .admin-body{display:flex;flex:1;overflow:hidden}
-#pages-sidebar{width:220px;background:rgba(26,31,58,.7);border-left:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;overflow:hidden}
-.sidebar-header{padding:14px 16px;font-size:12px;letter-spacing:2px;color:var(--gold);font-weight:700;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+#pages-sidebar{width:220px;background:rgba(26,31,58,.7);border-left:1px solid var(--border);
+  display:flex;flex-direction:column;flex-shrink:0;overflow:hidden}
+.sidebar-header{padding:14px 16px;font-size:12px;letter-spacing:2px;color:var(--gold);font-weight:700;
+  border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
 .sidebar-add{background:none;border:none;color:var(--gold);cursor:pointer;font-size:20px;line-height:1;transition:transform .2s;touch-action:manipulation}
 .sidebar-add:hover{transform:scale(1.2)}
 #pages-list{flex:1;overflow-y:auto;padding:8px;-webkit-overflow-scrolling:touch}
-.page-thumb{background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin-bottom:8px;cursor:pointer;transition:border-color .2s,background .2s;display:flex;align-items:center;gap:8px;position:relative}
+.page-thumb{background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:10px 12px;
+  margin-bottom:8px;cursor:pointer;transition:border-color .2s,background .2s;display:flex;align-items:center;gap:8px;position:relative}
 .page-thumb:hover{border-color:var(--gold);background:rgba(201,168,76,.06)}
 .page-thumb.selected{border-color:var(--gold);background:rgba(201,168,76,.1)}
 .page-thumb .pg-num{font-size:11px;color:var(--text-muted);min-width:20px}
 .page-thumb .pg-name{font-size:13px;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .page-thumb .pg-lock{font-size:14px;color:var(--text-muted)}
 #editor-main{flex:1;display:flex;flex-direction:column;overflow:hidden}
-#editor-toolbar{border-bottom:1px solid var(--border);padding:10px 16px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;flex-shrink:0;background:rgba(13,17,36,.5)}
-.tool-btn{padding:7px 14px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--text-light);transition:background .2s,border-color .2s;display:flex;align-items:center;gap:6px;letter-spacing:.5px;touch-action:manipulation}
+#editor-toolbar{border-bottom:1px solid var(--border);padding:10px 16px;display:flex;gap:8px;
+  align-items:center;flex-wrap:wrap;flex-shrink:0;background:rgba(13,17,36,.5)}
+.tool-btn{padding:7px 14px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;
+  border:1px solid var(--border);background:transparent;color:var(--text-light);
+  transition:background .2s,border-color .2s;display:flex;align-items:center;gap:6px;letter-spacing:.5px;touch-action:manipulation}
 .tool-btn:hover{background:var(--card-bg);border-color:var(--gold);color:var(--gold)}
 .tool-sep{width:1px;height:24px;background:var(--border);margin:0 4px}
 .tool-btn.active-lock{border-color:var(--rose);color:var(--rose)}
-#page-name-input{background:transparent;border:none;border-bottom:1px solid var(--border);color:var(--text-light);font-size:14px;padding:4px 8px;outline:none;width:160px;transition:border-color .2s}
+#page-name-input{background:transparent;border:none;border-bottom:1px solid var(--border);
+  color:var(--text-light);font-size:14px;padding:4px 8px;outline:none;width:160px;transition:border-color .2s}
 #page-name-input:focus{border-color:var(--gold)}
 #elements-area{flex:1;overflow-y:auto;padding:20px;-webkit-overflow-scrolling:touch}
 .el-item{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:14px;position:relative}
 .el-item-header{display:flex;align-items:center;gap:10px;margin-bottom:14px}
-.el-type-badge{font-size:10px;letter-spacing:2px;font-weight:700;color:var(--gold);background:rgba(201,168,76,.1);padding:3px 10px;border-radius:20px;border:1px solid var(--border)}
+.el-type-badge{font-size:10px;letter-spacing:2px;font-weight:700;color:var(--gold);
+  background:rgba(201,168,76,.1);padding:3px 10px;border-radius:20px;border:1px solid var(--border)}
 .el-item-actions{margin-right:auto;display:flex;gap:6px}
-.el-action-btn{background:none;border:1px solid var(--border);border-radius:6px;padding:6px 12px;font-size:11px;color:var(--text-muted);cursor:pointer;transition:color .2s,border-color .2s;touch-action:manipulation}
+.el-action-btn{background:none;border:1px solid var(--border);border-radius:6px;padding:6px 12px;
+  font-size:11px;color:var(--text-muted);cursor:pointer;transition:color .2s,border-color .2s;touch-action:manipulation}
 .el-action-btn:hover{color:var(--gold);border-color:var(--gold)}
 .el-action-btn.del:hover{color:var(--rose);border-color:var(--rose)}
 .el-row{display:flex;flex-direction:column;gap:8px;margin-bottom:10px}
 .el-row label{font-size:11px;color:var(--text-muted);letter-spacing:1px;font-weight:700}
-.el-row input,.el-row select,.el-row textarea{background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:8px;padding:10px 12px;color:#fff;font-size:13px;outline:none;transition:border-color .2s;font-family:inherit}
+.el-row input,.el-row select,.el-row textarea{background:rgba(255,255,255,.05);border:1px solid var(--border);
+  border-radius:8px;padding:10px 12px;color:#fff;font-size:13px;outline:none;transition:border-color .2s;font-family:inherit}
 .el-row input:focus,.el-row select:focus,.el-row textarea:focus{border-color:var(--gold)}
 .el-row textarea{resize:vertical;min-height:80px;line-height:1.6}
 .el-row select option{background:var(--navy)}
-.upload-btn{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:8px;background:rgba(201,168,76,.12);border:1px dashed var(--gold);color:var(--gold);font-size:13px;font-weight:700;cursor:pointer;transition:background .2s;touch-action:manipulation;margin-bottom:6px;}
+.upload-btn{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:8px;
+  background:rgba(201,168,76,.12);border:1px dashed var(--gold);color:var(--gold);font-size:13px;
+  font-weight:700;cursor:pointer;transition:background .2s;touch-action:manipulation;margin-bottom:6px}
 .upload-btn:hover{background:rgba(201,168,76,.22)}
 .upload-btn input[type="file"]{display:none}
 .upload-status{font-size:12px;color:var(--text-muted);margin-top:4px;word-break:break-all}
 .upload-status.ok{color:#7EC897}
 .el-row .img-preview{max-width:100%;max-height:160px;border-radius:8px;margin-top:10px;object-fit:cover}
-
-/* Image sizing controls in admin */
 .img-size-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .img-size-row label{font-size:11px;color:var(--text-muted);font-weight:700}
-.size-select{background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:#fff;font-size:13px;outline:none;cursor:pointer}
+.size-select{background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:8px;
+  padding:8px 12px;color:#fff;font-size:13px;outline:none;cursor:pointer}
 .size-select option{background:var(--navy)}
-
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .empty-state{text-align:center;padding:60px 20px;color:var(--text-muted)}
 .empty-state svg{opacity:.2;margin-bottom:16px}
 .empty-state p{font-size:14px}
-#preview-pane{width:280px;border-right:1px solid var(--border);background:rgba(13,17,36,.7);display:flex;flex-direction:column;flex-shrink:0;overflow:hidden}
+#preview-pane{width:280px;border-right:1px solid var(--border);background:rgba(13,17,36,.7);
+  display:flex;flex-direction:column;flex-shrink:0;overflow:hidden}
 .preview-header{padding:12px 16px;font-size:11px;letter-spacing:2px;color:var(--gold);font-weight:700;border-bottom:1px solid var(--border)}
 #preview-inner{flex:1;overflow-y:auto;padding:20px 14px;display:flex;flex-direction:column;align-items:center;gap:14px;-webkit-overflow-scrolling:touch}
-#notif{position:fixed;bottom:40px;left:50%;transform:translateX(-50%);background:var(--gold);color:var(--navy-deep);padding:10px 24px;border-radius:30px;font-weight:700;font-size:13px;z-index:999;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap}
+#notif{position:fixed;bottom:40px;left:50%;transform:translateX(-50%);background:var(--gold);
+  color:var(--navy-deep);padding:10px 24px;border-radius:30px;font-weight:700;font-size:13px;
+  z-index:999;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap}
 #notif.show{opacity:1}
-::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+
+/* ─── PER-PAGE BACKGROUND ADMIN UI ─── */
+.bg-row{display:flex;flex-direction:column;gap:8px;margin-bottom:14px;
+  padding:12px;background:rgba(201,168,76,.04);border:1px solid var(--border);border-radius:10px}
+.bg-row label{font-size:11px;color:var(--gold);letter-spacing:1px;font-weight:700}
+.bg-options{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.bg-type-btn{padding:6px 12px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;
+  border:1px solid var(--border);background:transparent;color:var(--text-muted);transition:all .2s;touch-action:manipulation}
+.bg-type-btn.active{background:rgba(201,168,76,.15);border-color:var(--gold);color:var(--gold)}
+.bg-color-input{width:40px;height:34px;padding:2px;border-radius:6px;border:1px solid var(--border);
+  background:transparent;cursor:pointer}
+.bg-upload-btn{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border-radius:8px;
+  background:rgba(201,168,76,.1);border:1px dashed var(--gold);color:var(--gold);font-size:12px;
+  font-weight:700;cursor:pointer;transition:background .2s;touch-action:manipulation}
+.bg-upload-btn:hover{background:rgba(201,168,76,.2)}
+.bg-upload-btn input{display:none}
+.bg-clear{padding:6px 10px;border-radius:6px;font-size:11px;border:1px solid var(--border);
+  background:transparent;color:var(--text-muted);cursor:pointer;transition:color .2s,border-color .2s;touch-action:manipulation}
+.bg-clear:hover{color:var(--rose);border-color:var(--rose)}
+.bg-preview-swatch{width:32px;height:32px;border-radius:6px;border:1px solid var(--border);flex-shrink:0}
+
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
 
 /* ─── MOBILE ─── */
 @media(max-width:700px){
@@ -246,6 +281,9 @@ html,body{
   #preview-pane{display:none}
   .admin-topbar h1{font-size:15px}
   .row2{grid-template-columns:1fr}
+  #side-progress{right:4px;padding:10px 5px;gap:6px}
+  .sp-pip{width:6px;height:6px}
+  .page{padding-right:40px}
 }
 @media(max-width:520px){
   #pages-sidebar{display:none}
@@ -254,22 +292,26 @@ html,body{
   .admin-topbar{padding:10px 12px;gap:8px}
   #page-name-input{width:120px}
 }
-@supports(padding: max(0px)){
-  #nav{padding-bottom:max(20px, calc(12px + var(--safe-bottom)))}
+@supports(padding:max(0px)){
+  #nav{padding-bottom:max(20px,calc(12px + var(--safe-bottom)))}
 }
 </style>
 </head>
 <body>
 <div id="stars"></div>
+
 <div id="app">
   <div id="progress-bar"></div>
   <div id="pages-wrap"></div>
   <div id="nav">
-    <button class="nav-btn" id="btn-next" title="הבא">→</button>
-    <span id="page-counter">1 / 1</span>
     <button class="nav-btn" id="btn-prev" title="הקודם">←</button>
+    <span id="page-counter">1 / 1</span>
+    <button class="nav-btn" id="btn-next" title="הבא">→</button>
   </div>
 </div>
+
+<!-- Side progress indicator -->
+<div id="side-progress"></div>
 
 <button id="admin-trigger" title="Admin">⚙</button>
 
@@ -285,7 +327,7 @@ html,body{
 
 <div id="admin-panel">
   <div class="admin-topbar">
-    <h1>✦ Birthday Story</h1>
+    <h1>✦ Daniel Birthday Story ✦</h1>
     <input id="page-name-input" placeholder="שם הדף..." />
     <button class="btn-sm" id="toggle-lock-btn">🔒 נעל דף</button>
     <button class="btn-sm primary" id="save-btn">שמור</button>
@@ -304,7 +346,7 @@ html,body{
         <div class="tool-sep"></div>
         <button class="tool-btn" id="add-image">🖼 תמונה</button>
         <button class="tool-btn" id="add-audio">🎵 אודיו</button>
-        <button class="tool-btn" id="add-video">🎬 וידאו MP4</button>
+        <button class="tool-btn" id="add-video">▶ וידאו / YouTube</button>
         <div class="tool-sep"></div>
         <button class="tool-btn" id="del-page-btn" style="color:var(--rose)">🗑 מחק דף</button>
       </div>
@@ -328,99 +370,178 @@ html,body{
 <div id="notif">נשמר! ✓</div>
 
 <script>
-// ─── STATE ───
+// ─── CONSTANTS ───
 const ADMIN_PASSWORD = '1234';
-const STORAGE_KEY = 'birthday_story_v4';
+const STORAGE_KEY    = 'birthday_story_v5';
+
+// ─── STATE ───
 let state = {
-  pages: [
-    {
-      id: uid(), name: 'עמוד 1', locked: false,
-      elements: [
-        {id: uid(), type: 'heading',    value: 'יום הולדת שמח! 🎂'},
-        {id: uid(), type: 'subheading', value: 'לך, האהוב שלי'},
-        {id: uid(), type: 'text',       value: 'זה הסיפור שלנו. לחץ ← כדי להמשיך...'}
-      ]
-    }
-  ],
+  pages: [{
+    id: uid(), name: 'עמוד 1', locked: false,
+    background: { type: 'none', value: '' },
+    elements: [
+      { id: uid(), type: 'heading',    value: 'יום הולדת שמח! 🎂' },
+      { id: uid(), type: 'subheading', value: 'לך, האהוב שלי' },
+      { id: uid(), type: 'text',       value: 'זה הסיפור שלנו. לחץ → כדי להמשיך...' }
+    ]
+  }],
   currentPage: 0
 };
-let adminMode = false;
+let adminMode      = false;
 let selectedPageIdx = 0;
-let touchStartX = 0, touchStartY = 0;
-// ─── FIXES (iOS + Chrome stability) ───
-const FILE_LIMITS = {
-  image: 8,
-  audio: 15,
-  video: 120
-};
 
-function safeNotify(msg){
+// Touch tracking
+let _touchStartX = 0;
+let _touchStartY = 0;
+let _touchStartT = 0;
+
+// ─── UTILS ───
+function uid() { return Math.random().toString(36).slice(2, 10); }
+
+function escHtml(s) {
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+let _notifTimer = null;
+function notify(msg) {
   const n = document.getElementById('notif');
   n.textContent = msg;
   n.classList.add('show');
-  setTimeout(() => n.classList.remove('show'), 2200);
+  clearTimeout(_notifTimer);
+  _notifTimer = setTimeout(() => n.classList.remove('show'), 2400);
 }
 
-// ─── UTILS ───
-function uid(){ return Math.random().toString(36).slice(2) }
-function escHtml(s){
-  return String(s)
-    .replace(/&/g,'&').replace(/</g,'<')
-    .replace(/>/g,'>').replace(/"/g,'"');
+// ─── YOUTUBE HELPERS ───
+function getYouTubeId(url) {
+  if (!url) return null;
+  const patterns = [
+    /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([A-Za-z0-9_-]{11})/,
+    /youtube\.com\/shorts\/([A-Za-z0-9_-]{11})/
+  ];
+  for (const p of patterns) {
+    const m = url.match(p);
+    if (m) return m[1];
+  }
+  return null;
 }
-function notify(msg){
-  const n = document.getElementById('notif');
-  n.textContent = msg; n.classList.add('show');
-  setTimeout(() => n.classList.remove('show'), 2200);
+
+function isYouTubeUrl(url) {
+  return !!getYouTubeId(url);
 }
 
 // ─── PERSISTENCE ───
-function loadState(){
-  try { const s = localStorage.getItem(STORAGE_KEY); if(s) state = JSON.parse(s); } catch(e){}
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      // Migrate old saves: ensure background field exists
+      if (parsed && Array.isArray(parsed.pages)) {
+        parsed.pages.forEach(p => {
+          if (!p.background) p.background = { type: 'none', value: '' };
+        });
+      }
+      state = parsed;
+    }
+  } catch(e) { console.warn('loadState failed', e); }
 }
-function saveState(){
+
+function saveState() {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     notify('נשמר! ✓');
-  } catch(e){ notify('שגיאה בשמירה – הקבצים גדולים מדי'); }
+  } catch(e) {
+    notify('שגיאה בשמירה – הקבצים גדולים מדי');
+  }
 }
 
 // ─── STARS ───
-(function(){
+(function() {
   const c = document.getElementById('stars');
-  for(let i=0;i<80;i++){
-    const s = document.createElement('div');
+  for (let i = 0; i < 80; i++) {
+    const s  = document.createElement('div');
     s.className = 'star';
-    const sz = Math.random()*2.5+0.5;
+    const sz = Math.random() * 2.5 + 0.5;
     s.style.cssText = `width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${2+Math.random()*4}s;--delay:${Math.random()*4}s;opacity:${Math.random()*.5}`;
     c.appendChild(s);
   }
 })();
 
-// ─── VIEWER ───
-function renderViewer(){
-  const wrap = document.getElementById('pages-wrap');
-  const pb   = document.getElementById('progress-bar');
-  const counter = document.getElementById('page-counter');
-  const cur = state.currentPage, total = state.pages.length;
+// ─── IMG SIZE MAP ───
+const IMG_SIZES = {
+  small:  { label: 'קטן',   maxW: '240px',              maxH: '30vh' },
+  medium: { label: 'בינוני', maxW: '400px',              maxH: '45vh' },
+  large:  { label: 'גדול',  maxW: 'min(520px,92vw)',    maxH: '60vh' },
+  full:   { label: 'מלא',   maxW: 'min(620px,96vw)',    maxH: '75vh' }
+};
 
+// ─── SIDE PROGRESS ───
+function renderSideProgress() {
+  const sp  = document.getElementById('side-progress');
+  const cur = state.currentPage;
+  sp.innerHTML = '';
+  state.pages.forEach((p, i) => {
+    const pip = document.createElement('div');
+    if (i === cur)       pip.className = 'sp-pip sp-active';
+    else if (i < cur)    pip.className = 'sp-pip sp-done';
+    else if (p.locked)   pip.className = 'sp-pip sp-locked';
+    else                 pip.className = 'sp-pip';
+    pip.title = p.name + (p.locked && i > cur ? ' 🔒' : '');
+    sp.appendChild(pip);
+  });
+  const lbl = document.createElement('div');
+  lbl.className = 'sp-label';
+  lbl.textContent = `${cur+1}/${state.pages.length}`;
+  sp.appendChild(lbl);
+}
+
+// ─── VIEWER ───
+function renderViewer() {
+  const wrap    = document.getElementById('pages-wrap');
+  const pb      = document.getElementById('progress-bar');
+  const counter = document.getElementById('page-counter');
+  const cur     = state.currentPage;
+  const total   = state.pages.length;
+
+  // Top progress dots
   pb.innerHTML = '';
-  state.pages.forEach((p,i) => {
+  state.pages.forEach((p, i) => {
     const d = document.createElement('div');
-    d.className = 'prog-dot'+(i===cur?' active':i<cur?' done':'');
-    d.title = p.name;
-    d.onclick = () => { if(i<=cur) navigateTo(i); };
+    let cls = 'prog-dot';
+    if (i === cur)     cls += ' active';
+    else if (i < cur)  cls += ' done';
+    else if (p.locked) cls += ' is-locked';
+    d.className = cls;
+    d.title = p.name + (p.locked && i > cur ? ' 🔒' : '');
+    d.onclick = () => {
+      if (i < cur) navigateTo(i);           // always allow going back
+      else if (i === cur) return;
+      else if (!p.locked) navigateTo(i);    // forward only if not locked
+    };
     pb.appendChild(d);
   });
+
   counter.textContent = `${cur+1} / ${total}`;
 
+  // Pages
   wrap.innerHTML = '';
-  state.pages.forEach((page,i) => {
+  state.pages.forEach((page, i) => {
     const el = document.createElement('div');
-    el.className = 'page'+(i===cur?' active':i<cur?' exit-left':' exit-right');
+    el.className = 'page' + (i === cur ? ' active' : i < cur ? ' exit-left' : ' exit-right');
     el.dataset.idx = i;
+
+    // Per-page background
+    applyPageBackground(el, page.background);
+
+    // Elements
     page.elements.forEach(e => el.appendChild(buildViewElement(e)));
-    if(page.locked){
+
+    // Lock overlay (only on pages AHEAD that are locked)
+    if (page.locked && i !== cur) {
       const lo = document.createElement('div');
       lo.className = 'lock-overlay';
       lo.innerHTML = `<div class="lock-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="1.8"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div><div class="lock-label">הדף נעול</div><div class="lock-hint">דף זה טרם נפתח</div>`;
@@ -429,94 +550,107 @@ function renderViewer(){
     wrap.appendChild(el);
   });
 
-  document.getElementById('btn-prev').disabled = (cur >= total-1);
-  document.getElementById('btn-next').disabled = (cur <= 0);
+  // Button states — PREV goes back (lower index), NEXT goes forward (higher index)
+  document.getElementById('btn-prev').disabled = (cur <= 0);
+  document.getElementById('btn-next').disabled = (cur >= total - 1);
+
+  renderSideProgress();
 }
 
-// ─── SIZE HELPERS ───
-const IMG_SIZES = {
-  small:  { label:'קטן',   maxW:'240px', maxH:'30vh' },
-  medium: { label:'בינוני', maxW:'400px', maxH:'45vh' },
-  large:  { label:'גדול',  maxW:'min(520px,92vw)', maxH:'60vh' },
-  full:   { label:'מלא',   maxW:'min(620px,96vw)', maxH:'75vh' }
-};
+function applyPageBackground(el, bg) {
+  if (!bg || bg.type === 'none') {
+    el.style.background = '';
+    return;
+  }
+  if (bg.type === 'color') {
+    el.style.background = bg.value;
+  } else if (bg.type === 'image') {
+    el.style.background = `url('${bg.value}') center/cover no-repeat`;
+  }
+}
 
-function buildViewElement(e){
+// ─── BUILD VIEW ELEMENT ───
+function buildViewElement(e) {
   const wrap = document.createElement('div');
 
-  if(e.type === 'heading'){
+  if (e.type === 'heading') {
     wrap.className = 'el-text';
     wrap.innerHTML = `<h1>${escHtml(e.value)}</h1>`;
   }
-  else if(e.type === 'subheading'){
+  else if (e.type === 'subheading') {
     wrap.className = 'el-text';
     wrap.innerHTML = `<h2>${escHtml(e.value)}</h2>`;
   }
-  else if(e.type === 'text'){
+  else if (e.type === 'text') {
     wrap.className = 'el-text';
-    wrap.innerHTML = `<p>${escHtml(e.value).replace(/\n/g,'<br>')}</p>`;
+    wrap.innerHTML = `<p>${escHtml(e.value).replace(/\n/g, '<br>')}</p>`;
   }
-  else if(e.type === 'subtitle'){
+  else if (e.type === 'subtitle') {
     wrap.className = 'el-text';
     wrap.innerHTML = `<div class="subtitle">${escHtml(e.value)}</div>`;
   }
-
-  // ─── IMAGE (with live resize controls) ───
-  else if(e.type === 'image'){
+  // ─── IMAGE ───
+  else if (e.type === 'image') {
     wrap.className = 'el-image';
     const size = e.size || 'medium';
-    const s = IMG_SIZES[size] || IMG_SIZES.medium;
+    const s    = IMG_SIZES[size] || IMG_SIZES.medium;
     wrap.style.maxWidth  = s.maxW;
     wrap.style.maxHeight = s.maxH;
 
-    if(e.src){
+    if (e.src) {
       const img = document.createElement('img');
-      img.src = e.src; img.alt = e.alt || '';
+      img.loading = 'lazy';
+      img.src = e.src;
+      img.alt = e.alt || '';
       wrap.appendChild(img);
     } else {
       wrap.innerHTML = `<div class="img-placeholder"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>תמונה</span></div>`;
     }
 
     // Resize bar
-    const bar = document.createElement('div');
-    bar.className = 'img-resize-bar';
-    const sizeOrder = ['small','medium','large','full'];
-    const curIdx = sizeOrder.indexOf(size);
+    const bar       = document.createElement('div');
+    bar.className   = 'img-resize-bar';
+    const sizeOrder = ['small', 'medium', 'large', 'full'];
+    const curIdx    = sizeOrder.indexOf(size);
 
-    const btnMinus = document.createElement('button');
-    btnMinus.className = 'img-resize-btn'; btnMinus.textContent = '−';
+    const btnMinus  = document.createElement('button');
+    btnMinus.className = 'img-resize-btn';
+    btnMinus.textContent = '−';
     btnMinus.title = 'הקטן';
-    btnMinus.disabled = curIdx === 0;
+    btnMinus.disabled = (curIdx === 0);
     btnMinus.onclick = () => {
-      const p = state.pages[state.currentPage];
+      const p      = state.pages[state.currentPage];
       const target = p && p.elements.find(x => x.id === e.id);
-      if(target && curIdx > 0){ target.size = sizeOrder[curIdx-1]; renderViewer(); }
+      if (target && curIdx > 0) { target.size = sizeOrder[curIdx - 1]; renderViewer(); }
     };
 
     const lbl = document.createElement('span');
-    lbl.className = 'img-size-label'; lbl.textContent = s.label;
+    lbl.className   = 'img-size-label';
+    lbl.textContent = s.label;
 
     const btnPlus = document.createElement('button');
-    btnPlus.className = 'img-resize-btn'; btnPlus.textContent = '+';
+    btnPlus.className = 'img-resize-btn';
+    btnPlus.textContent = '+';
     btnPlus.title = 'הגדל';
-    btnPlus.disabled = curIdx === sizeOrder.length-1;
+    btnPlus.disabled = (curIdx === sizeOrder.length - 1);
     btnPlus.onclick = () => {
-      const p = state.pages[state.currentPage];
+      const p      = state.pages[state.currentPage];
       const target = p && p.elements.find(x => x.id === e.id);
-      if(target && curIdx < sizeOrder.length-1){ target.size = sizeOrder[curIdx+1]; renderViewer(); }
+      if (target && curIdx < sizeOrder.length - 1) { target.size = sizeOrder[curIdx + 1]; renderViewer(); }
     };
 
-    bar.appendChild(btnMinus); bar.appendChild(lbl); bar.appendChild(btnPlus);
+    bar.appendChild(btnMinus);
+    bar.appendChild(lbl);
+    bar.appendChild(btnPlus);
     wrap.appendChild(bar);
   }
-
   // ─── AUDIO ───
-  else if(e.type === 'audio'){
+  else if (e.type === 'audio') {
     wrap.className = 'el-audio';
-    const aid = 'audio_'+e.id;
+    const aid = 'audio_' + e.id;
     wrap.innerHTML = `
-      <div class="audio-title">♪ ${escHtml(e.label||'מוזיקה')}</div>
-      <audio id="${aid}" src="${e.src||''}" preload="metadata"></audio>
+      <div class="audio-title">♪ ${escHtml(e.label || 'מוזיקה')}</div>
+      <audio id="${aid}" preload="metadata" ${e.src ? 'src="' + escHtml(e.src) + '"' : ''}></audio>
       <div class="audio-controls">
         <button class="audio-btn" data-aid="${aid}" data-action="playpause">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="color:var(--navy-deep)"><polygon points="5,3 19,12 5,21"/></svg>
@@ -530,237 +664,352 @@ function buildViewElement(e){
         </div>
         <button class="audio-restart" data-aid="${aid}" data-action="restart">↺</button>
       </div>`;
-    setTimeout(() => initAudioElement(aid, e.autoplay), 100);
+    setTimeout(() => initAudioElement(aid, e.autoplay), 120);
   }
-
-  // ─── VIDEO (MP4) ───
-  else if(e.type === 'video'){
+  // ─── VIDEO / YOUTUBE ───
+  else if (e.type === 'video') {
     wrap.className = 'el-video';
-    if(e.src){
+    const ytId = getYouTubeId(e.src || '');
+
+    if (ytId) {
+      // YouTube embed
+      const ytWrap = document.createElement('div');
+      ytWrap.className = 'yt-wrap';
+      const params = 'rel=0&modestbranding=1' + (e.autoplay ? '&autoplay=1&mute=1' : '');
+      ytWrap.innerHTML = `<iframe src="https://www.youtube.com/embed/${ytId}?${params}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>`;
+      wrap.appendChild(ytWrap);
+      if (e.label) {
+        const td = document.createElement('div');
+        td.className = 'video-title';
+        td.textContent = '▶ ' + e.label;
+        wrap.appendChild(td);
+      }
+    } else if (e.src) {
+      // MP4 / direct video — full cross-browser fix
       const vid = document.createElement('video');
-      vid.src = e.src;
-      vid.controls = true;
-      vid.playsInline = true;           // iOS inline playback
-      vid.setAttribute('playsinline','');
-      vid.setAttribute('webkit-playsinline',''); // older iOS
+      vid.controls    = true;
+      vid.playsInline = true;
+      vid.setAttribute('playsinline', '');
+      vid.setAttribute('webkit-playsinline', '');
       vid.preload = 'metadata';
-      if(e.autoplay){ vid.autoplay = true; vid.muted = true; } // autoplay needs muted
+      if (e.autoplay) { vid.autoplay = true; vid.muted = true; vid.setAttribute('muted', ''); }
+      vid.src = e.src;
       wrap.appendChild(vid);
-      if(e.label){
-        const titleDiv = document.createElement('div');
-        titleDiv.className = 'video-title';
-        titleDiv.textContent = '▶ '+e.label;
-        wrap.appendChild(titleDiv);
+      if (e.label) {
+        const td = document.createElement('div');
+        td.className = 'video-title';
+        td.textContent = '▶ ' + e.label;
+        wrap.appendChild(td);
       }
     } else {
-      wrap.innerHTML = `<div class="video-placeholder"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="2" y="4" width="20" height="16" rx="3"/><polygon points="10,9 10,15 15,12" fill="currentColor"/></svg><span>וידאו MP4</span></div>`;
+      wrap.innerHTML = `<div class="video-placeholder"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="2" y="4" width="20" height="16" rx="3"/><polygon points="10,9 10,15 15,12" fill="currentColor"/></svg><span>וידאו / YouTube</span></div>`;
     }
   }
 
   return wrap;
 }
 
-function initAudioElement(aid, autoplay){
-  const audio = document.getElementById(aid); if(!audio) return;
-  const playBtn  = document.querySelector(`[data-aid="${aid}"][data-action="playpause"]`);
-  const track    = document.querySelector(`input.audio-track[data-aid="${aid}"]`);
-  const curEl    = document.querySelector(`.audio-cur[data-aid="${aid}"]`);
-  const durEl    = document.querySelector(`.audio-dur[data-aid="${aid}"]`);
+// ─── AUDIO INIT ───
+function initAudioElement(aid, autoplay) {
+  const audio      = document.getElementById(aid); if (!audio) return;
+  const playBtn    = document.querySelector(`[data-aid="${aid}"][data-action="playpause"]`);
+  const track      = document.querySelector(`input.audio-track[data-aid="${aid}"]`);
+  const curEl      = document.querySelector(`.audio-cur[data-aid="${aid}"]`);
+  const durEl      = document.querySelector(`.audio-dur[data-aid="${aid}"]`);
   const restartBtn = document.querySelector(`[data-aid="${aid}"][data-action="restart"]`);
-  const playIcon  = `<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="color:var(--navy-deep)"><polygon points="5,3 19,12 5,21"/></svg>`;
-  const pauseIcon = `<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="color:var(--navy-deep)"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>`;
-  const fmt = s => Math.floor(s/60)+':'+(Math.floor(s%60)+'').padStart(2,'0');
-  audio.addEventListener('loadedmetadata', () => { if(durEl) durEl.textContent = fmt(audio.duration); });
+  const playIcon   = `<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="color:var(--navy-deep)"><polygon points="5,3 19,12 5,21"/></svg>`;
+  const pauseIcon  = `<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="color:var(--navy-deep)"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>`;
+  const fmt = s => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
+
+  audio.addEventListener('loadedmetadata', () => { if (durEl) durEl.textContent = fmt(audio.duration); });
   audio.addEventListener('timeupdate', () => {
-    if(!audio.duration) return;
-    if(track) track.value = (audio.currentTime/audio.duration)*100;
-    if(curEl) curEl.textContent = fmt(audio.currentTime);
+    if (!audio.duration) return;
+    if (track) track.value = (audio.currentTime / audio.duration) * 100;
+    if (curEl) curEl.textContent = fmt(audio.currentTime);
   });
-  audio.addEventListener('play',  () => { if(playBtn) playBtn.innerHTML = pauseIcon; });
-  audio.addEventListener('pause', () => { if(playBtn) playBtn.innerHTML = playIcon; });
-  audio.addEventListener('ended', () => { if(playBtn) playBtn.innerHTML = playIcon; if(track) track.value=0; if(curEl) curEl.textContent='0:00'; });
-  if(playBtn) playBtn.onclick = () => { audio.paused ? audio.play().catch(()=>{}) : audio.pause(); };
-  if(track) track.oninput = () => { if(audio.duration) audio.currentTime = (track.value/100)*audio.duration; };
-  if(restartBtn) restartBtn.onclick = () => { audio.currentTime=0; audio.play().catch(()=>{}); };
-  if(autoplay) audio.play().catch(()=>{});
+  audio.addEventListener('play',  () => { if (playBtn) playBtn.innerHTML = pauseIcon; });
+  audio.addEventListener('pause', () => { if (playBtn) playBtn.innerHTML = playIcon; });
+  audio.addEventListener('ended', () => {
+    if (playBtn) playBtn.innerHTML = playIcon;
+    if (track)   track.value = 0;
+    if (curEl)   curEl.textContent = '0:00';
+  });
+  if (playBtn)    playBtn.onclick    = () => { audio.paused ? audio.play().catch(() => {}) : audio.pause(); };
+  if (track)      track.oninput      = () => { if (audio.duration) audio.currentTime = (track.value / 100) * audio.duration; };
+  if (restartBtn) restartBtn.onclick = () => { audio.currentTime = 0; audio.play().catch(() => {}); };
+  if (autoplay)   setTimeout(() => audio.play().catch(() => {}), 300);
 }
 
-// ─── NAVIGATION ───
-function navigateTo(idx){
-  if(!state.pages[idx]) return;
+// ─── NAVIGATION (single, clean definitions) ───
+function navigateTo(idx) {
+  if (idx < 0 || idx >= state.pages.length) return;
 
-  // חסימה רק אם מנסים להתקדם קדימה לדף נעול
-  if(idx > state.currentPage && state.pages[state.currentPage].locked) return;
+  // Going forward: block if destination page is locked
+  if (idx > state.currentPage && state.pages[idx] && state.pages[idx].locked) {
+    notify('🔒 הדף נעול');
+    return;
+  }
+  // Going backward is always allowed
 
   state.currentPage = idx;
   renderViewer();
 }
 
-function prevPage(){
-  if(state.currentPage < state.pages.length - 1){
-    navigateTo(state.currentPage + 1);
-  }
+function goNext() {
+  navigateTo(state.currentPage + 1);
 }
 
-function nextPage(){
-  const cp = state.currentPage;
-  if(state.pages[cp] && state.pages[cp].locked) return;
-  navigateTo(cp - 1);
+function goPrev() {
+  navigateTo(state.currentPage - 1);
 }
-function prevPage(){
-  if(state.currentPage < state.pages.length - 1){
-    navigateTo(state.currentPage + 1);
-  }
-}
- navigateTo(state.currentPage+1); 
-function nextPage(){
-  const cp = state.currentPage;
-  if(state.pages[cp] && state.pages[cp].locked) return;
-  navigateTo(cp-1);
-}
-document.getElementById('btn-prev').onclick = prevPage;
-document.getElementById('btn-next').onclick = nextPage;
 
-document.getElementById('pages-wrap').addEventListener('touchstart', e => {
-  touchStartX = e.changedTouches[0].clientX;
-  touchStartY = e.changedTouches[0].clientY;
-}, {passive:true});
-document.getElementById('pages-wrap').addEventListener('touchend', e => {
-  const dx = touchStartX - e.changedTouches[0].clientX;
-  const dy = touchStartY - e.changedTouches[0].clientY;
-  if(Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 50){
-    dx > 0 ? nextPage() : prevPage();
-  }
-}, {passive:true});
+// ─── NAV BUTTONS ───
+document.getElementById('btn-next').onclick = goNext;
+document.getElementById('btn-prev').onclick = goPrev;
 
-document.addEventListener('keydown', e => {
-  if(adminMode) return;
-  if(e.key==='ArrowLeft')  nextPage();
-  if(e.key==='ArrowRight') prevPage();
+// ─── TOUCH SWIPE (single, fixed) ───
+(function() {
+  const wrap = document.getElementById('pages-wrap');
+
+  wrap.addEventListener('touchstart', ev => {
+    if (ev.touches.length !== 1) return;
+    _touchStartX = ev.touches[0].clientX;
+    _touchStartY = ev.touches[0].clientY;
+    _touchStartT = Date.now();
+  }, { passive: true });
+
+  wrap.addEventListener('touchend', ev => {
+    if (ev.changedTouches.length !== 1) return;
+    const dx = ev.changedTouches[0].clientX - _touchStartX;
+    const dy = ev.changedTouches[0].clientY - _touchStartY;
+    const dt = Date.now() - _touchStartT;
+    // Must be: horizontal-dominant, ≥40px, within 500ms
+    if (Math.abs(dx) > Math.abs(dy) * 1.2 && Math.abs(dx) > 40 && dt < 500) {
+      if (dx < 0) goNext();  // swipe left  → next page
+      else        goPrev();  // swipe right → prev page
+    }
+  }, { passive: true });
+})();
+
+// ─── KEYBOARD ───
+document.addEventListener('keydown', ev => {
+  if (adminMode) return;
+  if (ev.key === 'ArrowRight') goPrev();  // RTL: right arrow = go back
+  if (ev.key === 'ArrowLeft')  goNext();  // RTL: left arrow  = go forward
 });
 
 // ─── ADMIN LOGIN ───
 document.getElementById('admin-trigger').onclick = () => {
-  if(adminMode){ exitAdmin(); return; }
-  document.getElementById('admin-login').style.display='flex';
-  document.getElementById('login-pw').value='';
-  document.getElementById('login-err').textContent='';
+  if (adminMode) { exitAdmin(); return; }
+  const loginEl = document.getElementById('admin-login');
+  loginEl.style.display = 'flex';
+  document.getElementById('login-pw').value = '';
+  document.getElementById('login-err').textContent = '';
   setTimeout(() => document.getElementById('login-pw').focus(), 100);
 };
 document.getElementById('login-btn').onclick = doLogin;
-document.getElementById('login-pw').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
+document.getElementById('login-pw').addEventListener('keydown', ev => { if (ev.key === 'Enter') doLogin(); });
 
-function doLogin(){
+function doLogin() {
   const pw = document.getElementById('login-pw').value;
-  if(pw === ADMIN_PASSWORD){
-    document.getElementById('admin-login').style.display='none';
+  if (pw === ADMIN_PASSWORD) {
+    document.getElementById('admin-login').style.display = 'none';
     enterAdmin();
   } else {
-    document.getElementById('login-err').textContent='סיסמה שגויה, נסה שוב';
-    document.getElementById('login-pw').value='';
+    document.getElementById('login-err').textContent = 'סיסמה שגויה, נסה שוב';
+    document.getElementById('login-pw').value = '';
   }
 }
-function enterAdmin(){
+
+function enterAdmin() {
   adminMode = true;
-  document.getElementById('admin-panel').style.display='flex';
+  document.getElementById('admin-panel').style.display = 'flex';
   selectedPageIdx = state.currentPage;
-  renderAdminSidebar(); renderEditor();
+  renderAdminSidebar();
+  renderEditor();
 }
-function exitAdmin(){
+
+function exitAdmin() {
   adminMode = false;
-  document.getElementById('admin-panel').style.display='none';
+  document.getElementById('admin-panel').style.display = 'none';
   renderViewer();
 }
+
 document.getElementById('exit-admin-btn').onclick = exitAdmin;
 document.getElementById('save-btn').onclick = () => { applyPageName(); saveState(); renderViewer(); };
 
 // ─── ADMIN SIDEBAR ───
-function renderAdminSidebar(){
+function renderAdminSidebar() {
   const list = document.getElementById('pages-list');
   list.innerHTML = '';
-  state.pages.forEach((p,i) => {
+  state.pages.forEach((p, i) => {
     const el = document.createElement('div');
-    el.className = 'page-thumb'+(i===selectedPageIdx?' selected':'');
-    el.innerHTML = `<span class="pg-num">${i+1}</span><span class="pg-name">${escHtml(p.name)}</span>${p.locked?'<span class="pg-lock">🔒</span>':''}`;
-    el.onclick = () => { applyPageName(); selectedPageIdx=i; renderAdminSidebar(); renderEditor(); };
+    el.className = 'page-thumb' + (i === selectedPageIdx ? ' selected' : '');
+    el.innerHTML = `<span class="pg-num">${i + 1}</span><span class="pg-name">${escHtml(p.name)}</span>${p.locked ? '<span class="pg-lock">🔒</span>' : ''}`;
+    el.onclick = () => { applyPageName(); selectedPageIdx = i; renderAdminSidebar(); renderEditor(); };
     list.appendChild(el);
   });
 }
 
 document.getElementById('add-page-btn').onclick = () => {
   applyPageName();
-  const p = {id:uid(), name:`עמוד ${state.pages.length+1}`, locked:false, elements:[]};
+  const p = { id: uid(), name: `עמוד ${state.pages.length + 1}`, locked: false, background: { type: 'none', value: '' }, elements: [] };
   state.pages.push(p);
-  selectedPageIdx = state.pages.length-1;
-  renderAdminSidebar(); renderEditor();
+  selectedPageIdx = state.pages.length - 1;
+  renderAdminSidebar();
+  renderEditor();
 };
+
 document.getElementById('del-page-btn').onclick = () => {
-  if(state.pages.length<=1){ notify('לא ניתן למחוק את הדף האחרון'); return; }
-  if(!confirm('למחוק את הדף?')) return;
-  state.pages.splice(selectedPageIdx,1);
-  selectedPageIdx = Math.max(0,selectedPageIdx-1);
-  if(state.currentPage>=state.pages.length) state.currentPage=state.pages.length-1;
-  renderAdminSidebar(); renderEditor();
+  if (state.pages.length <= 1) { notify('לא ניתן למחוק את הדף האחרון'); return; }
+  if (!confirm('למחוק את הדף?')) return;
+  state.pages.splice(selectedPageIdx, 1);
+  selectedPageIdx = Math.max(0, selectedPageIdx - 1);
+  if (state.currentPage >= state.pages.length) state.currentPage = state.pages.length - 1;
+  renderAdminSidebar();
+  renderEditor();
 };
 
 // ─── EDITOR ───
-function getPage(){ return state.pages[selectedPageIdx]; }
-function applyPageName(){
+function getPage() { return state.pages[selectedPageIdx]; }
+
+function applyPageName() {
   const p = getPage();
-  if(p) p.name = document.getElementById('page-name-input').value || p.name;
+  if (p) p.name = document.getElementById('page-name-input').value || p.name;
 }
 
-function renderEditor(){
-  const p = getPage(); if(!p) return;
+function renderEditor() {
+  const p = getPage(); if (!p) return;
+  // Ensure background exists (migration)
+  if (!p.background) p.background = { type: 'none', value: '' };
+
   document.getElementById('page-name-input').value = p.name;
   const lockBtn = document.getElementById('toggle-lock-btn');
   lockBtn.textContent = p.locked ? '🔓 בטל נעילה' : '🔒 נעל דף';
-  lockBtn.className = 'btn-sm'+(p.locked?' active-lock':'');
+  lockBtn.className = 'btn-sm' + (p.locked ? ' active-lock' : '');
+
   const area = document.getElementById('elements-area');
-  if(!p.elements.length){
-    area.innerHTML='';
-    const em=document.createElement('div'); em.className='empty-state';
-    em.innerHTML=`<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M9 9h6M9 12h6M9 15h4"/></svg><p>הוסף אלמנטים לדף זה</p>`;
+  area.innerHTML = '';
+
+  // ── Background section ──
+  area.appendChild(buildBgRow(p));
+
+  if (!p.elements.length) {
+    const em = document.createElement('div');
+    em.className = 'empty-state';
+    em.innerHTML = `<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M9 9h6M9 12h6M9 15h4"/></svg><p>הוסף אלמנטים לדף זה</p>`;
     area.appendChild(em);
   } else {
-    area.innerHTML='';
-    p.elements.forEach((el,i) => area.appendChild(buildElItem(el,i)));
+    p.elements.forEach((el, i) => area.appendChild(buildElItem(el, i)));
   }
   renderPreview();
 }
 
+// ─── PER-PAGE BACKGROUND ROW ───
+function buildBgRow(p) {
+  const bg  = p.background;
+  const row = document.createElement('div');
+  row.className = 'bg-row';
+
+  const swatchColor = (bg.type === 'color') ? bg.value : '#0D1124';
+
+  row.innerHTML = `
+    <label>🎨 רקע הדף</label>
+    <div class="bg-options">
+      <button class="bg-type-btn${bg.type==='none'?' active':''}" data-bgtype="none">ללא</button>
+      <button class="bg-type-btn${bg.type==='color'?' active':''}" data-bgtype="color">צבע</button>
+      <button class="bg-type-btn${bg.type==='image'?' active':''}" data-bgtype="image">תמונה</button>
+      ${bg.type==='color' ? `<input type="color" class="bg-color-input" id="bg-color-pick" value="${escHtml(bg.value||'#0D1124')}">` : ''}
+      ${bg.type==='image' ? `<label class="bg-upload-btn">📷 העלה תמונה<input type="file" id="bg-img-upload" accept="image/*"></label>` : ''}
+      ${bg.type!=='none' ? `<button class="bg-clear" id="bg-clear-btn">✕ נקה</button>` : ''}
+      ${bg.type==='color' ? `<div class="bg-preview-swatch" style="background:${escHtml(bg.value||'#0D1124')}"></div>` : ''}
+      ${bg.type==='image' && bg.value ? `<span style="font-size:11px;color:#7EC897">✓ תמונת רקע</span>` : ''}
+    </div>`;
+
+  // Type buttons
+  row.querySelectorAll('[data-bgtype]').forEach(btn => {
+    btn.onclick = () => {
+      p.background.type  = btn.dataset.bgtype;
+      if (btn.dataset.bgtype === 'none') p.background.value = '';
+      renderEditor();
+      renderPreview();
+    };
+  });
+
+  // Color picker
+  const colorPick = row.querySelector('#bg-color-pick');
+  if (colorPick) {
+    colorPick.oninput = colorPick.onchange = () => {
+      p.background.value = colorPick.value;
+      const swatch = row.querySelector('.bg-preview-swatch');
+      if (swatch) swatch.style.background = colorPick.value;
+      renderPreview();
+    };
+  }
+
+  // Image upload
+  const imgUp = row.querySelector('#bg-img-upload');
+  if (imgUp) {
+    imgUp.onchange = () => {
+      const file = imgUp.files[0]; if (!file) return;
+      if (file.size > 5 * 1024 * 1024) { notify('תמונת רקע גדולה מדי (מקסימום 5MB)'); return; }
+      notify('טוען רקע...');
+      const reader = new FileReader();
+      reader.onload = ev => { p.background.value = ev.target.result; renderEditor(); renderPreview(); notify('רקע הוגדר! ✓'); };
+      reader.readAsDataURL(file);
+    };
+  }
+
+  // Clear
+  const clearBtn = row.querySelector('#bg-clear-btn');
+  if (clearBtn) {
+    clearBtn.onclick = () => { p.background = { type: 'none', value: '' }; renderEditor(); renderPreview(); };
+  }
+
+  return row;
+}
+
 document.getElementById('toggle-lock-btn').onclick = () => {
-  const p=getPage(); if(!p) return; p.locked=!p.locked; renderEditor(); renderAdminSidebar();
+  const p = getPage(); if (!p) return;
+  p.locked = !p.locked;
+  renderEditor();
+  renderAdminSidebar();
 };
 
+// ─── ADD ELEMENT BUTTONS ───
 const addBtns = {
-  'add-heading':    () => addEl({id:uid(),type:'heading',value:'כותרת ראשית'}),
-  'add-subheading': () => addEl({id:uid(),type:'subheading',value:'כותרת משנה'}),
-  'add-text':       () => addEl({id:uid(),type:'text',value:'טקסט כאן...'}),
-  'add-image':      () => addEl({id:uid(),type:'image',src:'',alt:'',size:'medium'}),
-  'add-audio':      () => addEl({id:uid(),type:'audio',src:'',label:'מוזיקה',autoplay:false}),
-  'add-video':      () => addEl({id:uid(),type:'video',src:'',label:'',autoplay:false}),
+  'add-heading':    () => addEl({ id: uid(), type: 'heading',    value: 'כותרת ראשית' }),
+  'add-subheading': () => addEl({ id: uid(), type: 'subheading', value: 'כותרת משנה' }),
+  'add-text':       () => addEl({ id: uid(), type: 'text',       value: 'טקסט כאן...' }),
+  'add-image':      () => addEl({ id: uid(), type: 'image',      src: '', alt: '', size: 'medium' }),
+  'add-audio':      () => addEl({ id: uid(), type: 'audio',      src: '', label: 'מוזיקה', autoplay: false }),
+  'add-video':      () => addEl({ id: uid(), type: 'video',      src: '', label: '', autoplay: false }),
 };
-Object.entries(addBtns).forEach(([id,fn]) => {
+Object.entries(addBtns).forEach(([id, fn]) => {
   document.getElementById(id).onclick = () => { fn(); renderEditor(); };
 });
-function addEl(el){ const p=getPage(); if(!p) return; p.elements.push(el); }
+function addEl(el) { const p = getPage(); if (!p) return; p.elements.push(el); }
 
 // ─── BUILD ELEMENT EDITOR ITEM ───
-function buildElItem(el, idx){
-  const wrap = document.createElement('div'); wrap.className='el-item';
-  const typeName = {heading:'כותרת',subheading:'כותרת משנה',text:'טקסט',subtitle:'תת-כותרת',image:'תמונה',audio:'אודיו',video:'וידאו MP4'}[el.type]||el.type;
-  let inner='';
+function buildElItem(el, idx) {
+  const wrap = document.createElement('div');
+  wrap.className = 'el-item';
+  const typeNames = { heading: 'כותרת', subheading: 'כותרת משנה', text: 'טקסט', subtitle: 'תת-כותרת', image: 'תמונה', audio: 'אודיו', video: 'וידאו / YouTube' };
+  const typeName  = typeNames[el.type] || el.type;
+  let inner = '';
 
-  if(['heading','subheading','text','subtitle'].includes(el.type)){
-    const isTA = el.type==='text';
-    inner=`<div class="el-row"><label>תוכן</label>${isTA?`<textarea data-field="value" data-id="${el.id}">${escHtml(el.value)}</textarea>`:`<input type="text" data-field="value" data-id="${el.id}" value="${escHtml(el.value)}">`}</div>`;
+  if (['heading', 'subheading', 'text', 'subtitle'].includes(el.type)) {
+    const isTA = el.type === 'text';
+    inner = `<div class="el-row"><label>תוכן</label>${isTA
+      ? `<textarea data-field="value" data-id="${el.id}">${escHtml(el.value)}</textarea>`
+      : `<input type="text" data-field="value" data-id="${el.id}" value="${escHtml(el.value)}">`
+    }</div>`;
   }
-  else if(el.type==='image'){
+  else if (el.type === 'image') {
     const previewHtml = el.src ? `<img class="img-preview" src="${el.src}" alt="">` : '';
-    const fileName = el.fileName ? `<div class="upload-status ok">✓ ${escHtml(el.fileName)}</div>` : '';
-    const sizeVal = el.size||'medium';
-    inner=`
+    const fileName    = el.fileName ? `<div class="upload-status ok">✓ ${escHtml(el.fileName)}</div>` : '';
+    const sizeVal     = el.size || 'medium';
+    inner = `
       <div class="el-row">
         <label>העלאת תמונה מהמכשיר</label>
         <label class="upload-btn">📁 בחר תמונה<input type="file" accept="image/*" data-upload="image" data-id="${el.id}"></label>
@@ -773,10 +1022,10 @@ function buildElItem(el, idx){
       <div class="el-row">
         <label>גודל תמונה</label>
         <select class="size-select" data-field="size" data-id="${el.id}">
-          <option value="small" ${sizeVal==='small'?'selected':''}>קטן</option>
+          <option value="small"  ${sizeVal==='small'?'selected':''}>קטן</option>
           <option value="medium" ${sizeVal==='medium'?'selected':''}>בינוני (ברירת מחדל)</option>
-          <option value="large" ${sizeVal==='large'?'selected':''}>גדול</option>
-          <option value="full" ${sizeVal==='full'?'selected':''}>מלא</option>
+          <option value="large"  ${sizeVal==='large'?'selected':''}>גדול</option>
+          <option value="full"   ${sizeVal==='full'?'selected':''}>מלא</option>
         </select>
       </div>
       <div class="el-row">
@@ -784,20 +1033,20 @@ function buildElItem(el, idx){
         <input type="text" data-field="alt" data-id="${el.id}" value="${escHtml(el.alt||'')}">
       </div>`;
   }
-  else if(el.type==='audio'){
+  else if (el.type === 'audio') {
     const fileName = el.fileName ? `<div class="upload-status ok">✓ ${escHtml(el.fileName)}</div>` : '';
-    inner=`
+    inner = `
       <div class="row2">
         <div class="el-row"><label>כותרת</label><input type="text" data-field="label" data-id="${el.id}" value="${escHtml(el.label||'')}"></div>
         <div class="el-row"><label>הפעלה אוטומטית</label>
           <select data-field="autoplay" data-id="${el.id}">
             <option value="false" ${!el.autoplay?'selected':''}>לא</option>
-            <option value="true" ${el.autoplay?'selected':''}>כן</option>
+            <option value="true"  ${el.autoplay?'selected':''}>כן</option>
           </select>
         </div>
       </div>
       <div class="el-row">
-        <label>העלאת קובץ אודיו מהמכשיר (MP3, M4A, WAV)</label>
+        <label>העלאת קובץ אודיו (MP3, M4A, WAV)</label>
         <label class="upload-btn">🎵 בחר קובץ אודיו<input type="file" accept="audio/*,.mp3,.m4a,.wav,.ogg" data-upload="audio" data-id="${el.id}"></label>
         ${fileName}
       </div>
@@ -806,78 +1055,72 @@ function buildElItem(el, idx){
         <input type="text" data-field="src" data-id="${el.id}" value="${escHtml(el.src||'')}" placeholder="https://...mp3">
       </div>`;
   }
-  else if(el.type==='video'){
+  else if (el.type === 'video') {
     const fileName = el.fileName ? `<div class="upload-status ok">✓ ${escHtml(el.fileName)}</div>` : '';
-    inner=`
+    const isYT     = isYouTubeUrl(el.src || '');
+    inner = `
       <div class="row2">
         <div class="el-row"><label>כותרת (אופציונלי)</label><input type="text" data-field="label" data-id="${el.id}" value="${escHtml(el.label||'')}"></div>
-        <div class="el-row"><label>הפעלה אוטומטית (ללא קול)</label>
+        <div class="el-row"><label>הפעלה אוטומטית</label>
           <select data-field="autoplay" data-id="${el.id}">
             <option value="false" ${!el.autoplay?'selected':''}>לא</option>
-            <option value="true" ${el.autoplay?'selected':''}>כן (ללא קול)</option>
+            <option value="true"  ${el.autoplay?'selected':''}>כן (ללא קול)</option>
           </select>
         </div>
       </div>
       <div class="el-row">
-        <label>העלאת קובץ וידאו מהמכשיר (MP4, MOV, WebM)</label>
-        <label class="upload-btn">🎬 בחר קובץ וידאו<input type="file" accept="video/*,.mp4,.mov,.webm,.m4v" data-upload="video" data-id="${el.id}"></label>
-        ${fileName}
+        <label>🎬 קישור YouTube או URL לוידאו MP4</label>
+        <input type="text" data-field="src" data-id="${el.id}" value="${escHtml(el.src||'')}" placeholder="https://youtube.com/watch?v=... או https://...mp4">
+        ${isYT ? '<div class="upload-status ok">✓ קישור YouTube זוהה</div>' : ''}
       </div>
       <div class="el-row">
-        <label>או הכנס URL לוידאו (אופציונלי)</label>
-        <input type="text" data-field="src" data-id="${el.id}" value="${escHtml(el.src||'')}" placeholder="https://...mp4">
+        <label>או העלאת קובץ MP4 מהמכשיר</label>
+        <label class="upload-btn">📁 בחר קובץ וידאו<input type="file" accept="video/*,.mp4,.mov,.webm,.m4v" data-upload="video" data-id="${el.id}"></label>
+        ${fileName}
       </div>
-      <div class="upload-status" style="color:var(--text-muted);font-size:11px">⚠ קבצי וידאו גדולים (מעל 50MB) עלולים לגרום לבעיות בשמירה. מומלץ לדחוס לפני העלאה.</div>`;
+      <div class="upload-status" style="color:var(--text-muted);font-size:11px">💡 מומלץ: השתמש בקישור YouTube לחוויה הטובה ביותר בכל המכשירים</div>`;
   }
 
-  wrap.innerHTML=`
+  wrap.innerHTML = `
     <div class="el-item-header">
       <span class="el-type-badge">${typeName}</span>
       <div class="el-item-actions">
-        ${idx>0?`<button class="el-action-btn" data-action="up" data-idx="${idx}">▲</button>`:''}
-        ${idx<(getPage().elements.length-1)?`<button class="el-action-btn" data-action="down" data-idx="${idx}">▼</button>`:''}
+        ${idx > 0 ? `<button class="el-action-btn" data-action="up" data-idx="${idx}">▲</button>` : ''}
+        ${idx < (getPage().elements.length - 1) ? `<button class="el-action-btn" data-action="down" data-idx="${idx}">▼</button>` : ''}
         <button class="el-action-btn del" data-action="del" data-idx="${idx}">✕</button>
       </div>
     </div>${inner}`;
 
-  // Field input events
+  // Field change events
   wrap.querySelectorAll('[data-field]').forEach(inp => {
     const field = inp.dataset.field;
     const elId  = inp.dataset.id;
-    inp.addEventListener('input', () => {
-      const target = getPage().elements.find(e => e.id===elId); if(!target) return;
+    const update = () => {
+      const target = getPage().elements.find(e => e.id === elId);
+      if (!target) return;
       let val = inp.value;
-      if(field==='autoplay') val = val==='true';
+      if (field === 'autoplay') val = (val === 'true');
       target[field] = val;
       renderPreview();
-    });
-    // Also listen for change on select
-    if(inp.tagName==='SELECT') inp.addEventListener('change', () => {
-      const target = getPage().elements.find(e => e.id===elId); if(!target) return;
-      let val = inp.value;
-      if(field==='autoplay') val = val==='true';
-      target[field] = val;
-      renderPreview();
-    });
+    };
+    inp.addEventListener('input', update);
+    if (inp.tagName === 'SELECT') inp.addEventListener('change', update);
   });
 
   // File upload events
   wrap.querySelectorAll('[data-upload]').forEach(fileInput => {
     fileInput.addEventListener('change', () => {
-      const file = fileInput.files[0]; if(!file) return;
-      const elId = fileInput.dataset.id;
+      const file       = fileInput.files[0]; if (!file) return;
+      const elId       = fileInput.dataset.id;
       const uploadType = fileInput.dataset.upload;
-      const target = getPage().elements.find(e => e.id===elId); if(!target) return;
-      // Size limits: image 8MB, audio 15MB, video 80MB
-      const limits = {image:8, audio:15, video:80};
-      const maxMB = limits[uploadType] || 10;
-      if(file.size > maxMB*1024*1024){
-        notify(`הקובץ גדול מדי (מקסימום ${maxMB}MB)`); return;
-      }
+      const target     = getPage().elements.find(e => e.id === elId); if (!target) return;
+      const limits     = { image: 8, audio: 15, video: 80 };
+      const maxMB      = limits[uploadType] || 10;
+      if (file.size > maxMB * 1024 * 1024) { notify(`הקובץ גדול מדי (מקסימום ${maxMB}MB)`); return; }
       notify('טוען קובץ...');
       const reader = new FileReader();
       reader.onload = ev => {
-        target.src = ev.target.result;
+        target.src      = ev.target.result;
         target.fileName = file.name;
         renderEditor();
         notify('הקובץ הועלה! ✓');
@@ -887,26 +1130,29 @@ function buildElItem(el, idx){
     });
   });
 
-  // Move/delete
+  // Move / delete
   wrap.querySelectorAll('[data-action]').forEach(btn => {
     btn.onclick = () => {
-      const action=btn.dataset.action, i=parseInt(btn.dataset.idx);
-      const els=getPage().elements;
-      if(action==='del'){ els.splice(i,1); renderEditor(); }
-      else if(action==='up'){ [els[i-1],els[i]]=[els[i],els[i-1]]; renderEditor(); }
-      else if(action==='down'){ [els[i],els[i+1]]=[els[i+1],els[i]]; renderEditor(); }
+      const action = btn.dataset.action;
+      const i      = parseInt(btn.dataset.idx);
+      const els    = getPage().elements;
+      if (action === 'del')                           { els.splice(i, 1); renderEditor(); }
+      else if (action === 'up'   && i > 0)            { [els[i-1], els[i]] = [els[i], els[i-1]]; renderEditor(); }
+      else if (action === 'down' && i < els.length-1) { [els[i], els[i+1]] = [els[i+1], els[i]]; renderEditor(); }
     };
   });
 
   return wrap;
 }
 
-function renderPreview(){
+function renderPreview() {
   const pane = document.getElementById('preview-inner');
-  const p = getPage(); pane.innerHTML=''; if(!p) return;
+  const p    = getPage();
+  pane.innerHTML = '';
+  if (!p) return;
   p.elements.forEach(e => {
     const el = buildViewElement(e);
-    el.style.cssText='transform:scale(0.8);transform-origin:top center;margin-bottom:-16px';
+    el.style.cssText = 'transform:scale(0.8);transform-origin:top center;margin-bottom:-16px';
     pane.appendChild(el);
   });
 }
