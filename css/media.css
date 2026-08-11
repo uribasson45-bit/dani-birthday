@@ -1,0 +1,95 @@
+/* ─── IMAGE ELEMENT ─── */
+.el-image{max-width:min(480px,90vw);border-radius:12px;overflow:hidden;margin:10px 0;
+  box-shadow:0 20px 60px rgba(0,0,0,.5),0 0 0 1px var(--border);position:relative;transition:transform .2s}
+.el-image img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .3s}
+.el-image .img-resize-bar{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:center;justify-content:center;gap:8px;
+  padding:8px;background:rgba(13,17,36,.7);border-top:1px solid var(--border)}
+.img-resize-btn{background:var(--card-bg);border:1px solid var(--border);color:var(--gold);
+  border-radius:6px;width:32px;height:32px;font-size:16px;cursor:pointer;
+  display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:center;justify-content:center;
+  transition:background .2s;
+  /* FIX: ensure touch targets are large enough */
+  min-width:44px;min-height:44px;-webkit-flex-shrink:0;flex-shrink:0;
+  touch-action:manipulation;-webkit-tap-highlight-color:transparent;}
+.img-resize-btn:hover{background:rgba(201,168,76,.15)}
+.img-size-label{font-size:11px;color:var(--text-muted);min-width:36px;text-align:center}
+.el-image .img-placeholder{width:100%;height:220px;background:var(--card-bg);
+  border:1px dashed var(--border);border-radius:12px;
+  display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;
+  -webkit-align-items:center;align-items:center;-webkit-justify-content:center;justify-content:center;
+  color:var(--text-muted);font-size:13px;gap:8px}
+.el-image .img-placeholder svg{opacity:.4}
+
+/* ─── AUDIO ELEMENT ─── */
+.el-audio{background:var(--card-bg);border:1px solid var(--border);border-radius:14px;padding:16px 20px;max-width:400px;width:100%;margin:10px 0}
+.el-audio .audio-title{font-size:13px;color:var(--gold);margin-bottom:12px;font-weight:700;letter-spacing:1px}
+.el-audio .audio-controls{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;gap:12px}
+.el-audio .audio-btn{width:42px;height:42px;border-radius:50%;background:var(--gold);border:none;cursor:pointer;
+  display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:center;justify-content:center;
+  -webkit-flex-shrink:0;flex-shrink:0;transition:transform .15s,background .2s;
+  min-width:44px;min-height:44px;touch-action:manipulation;-webkit-tap-highlight-color:transparent;}
+.el-audio .audio-btn:hover{background:var(--gold-light);transform:scale(1.08)}
+.el-audio .audio-progress-wrap{-webkit-flex:1;flex:1;display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;gap:6px}
+.el-audio .audio-track{width:100%;height:4px;-webkit-appearance:none;appearance:none;background:rgba(255,255,255,.15);border-radius:2px;cursor:pointer;outline:none;padding:8px 0;margin:-8px 0}
+.el-audio .audio-track::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:14px;height:14px;border-radius:50%;background:var(--gold);cursor:pointer}
+.el-audio .audio-time{font-size:11px;color:var(--text-muted);display:-webkit-flex;display:flex;-webkit-justify-content:space-between;justify-content:space-between}
+.el-audio .audio-restart{background:none;border:1px solid var(--border);color:var(--text-muted);border-radius:8px;padding:8px 12px;font-size:13px;cursor:pointer;
+  transition:color .2s,border-color .2s;min-width:44px;min-height:44px;
+  display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:center;justify-content:center;
+  touch-action:manipulation;-webkit-tap-highlight-color:transparent;}
+.el-audio .audio-restart:hover{color:var(--gold);border-color:var(--gold)}
+
+/* ─── VIDEO / YOUTUBE ELEMENT ─── */
+/* FIX #2: Responsive YouTube player */
+.el-video{
+  /* Wider by default: take more horizontal space */
+  width:min(700px,96vw);
+  max-width:96vw;
+  border-radius:12px;overflow:hidden;margin:10px 0;
+  box-shadow:0 20px 60px rgba(0,0,0,.6),0 0 0 1px var(--border);
+  background:#000;
+}
+.el-video video{
+  width:100%;
+  /* FIX: larger video, responsive height */
+  max-height:60vh;
+  display:block;border-radius:12px;object-fit:contain;
+}
+/* FIX: proper 16:9 aspect ratio container that fills the width */
+.el-video .yt-wrap{
+  position:relative;
+  width:100%;
+  /* Modern aspect-ratio approach */
+  aspect-ratio:16/9;
+  /* Fallback for older browsers that don't support aspect-ratio */
+  padding-bottom:0;
+  background:#000;
+  overflow:hidden;
+}
+/* Fallback: when aspect-ratio is not supported, use padding-bottom trick */
+@supports not (aspect-ratio:16/9){
+  .el-video .yt-wrap{
+    height:0;
+    padding-bottom:56.25%;
+  }
+  .el-video .yt-wrap iframe{
+    position:absolute;
+    top:0;left:0;
+    width:100%;height:100%;
+  }
+}
+.el-video .yt-wrap iframe{
+  position:absolute;
+  top:0;left:0;
+  width:100%;height:100%;
+  border:none;
+  /* FIX: explicit display block prevents Chrome gap */
+  display:block;
+}
+.el-video .video-title{font-size:12px;color:var(--gold);padding:8px 12px;
+  background:rgba(13,17,36,.7);letter-spacing:1px;font-weight:700;border-top:1px solid var(--border)}
+.el-video .video-placeholder{width:100%;height:200px;background:var(--card-bg);
+  border:1px dashed var(--border);border-radius:12px;
+  display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;
+  -webkit-align-items:center;align-items:center;-webkit-justify-content:center;justify-content:center;
+  color:var(--text-muted);font-size:13px;gap:10px}

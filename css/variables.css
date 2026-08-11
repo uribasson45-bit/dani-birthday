@@ -1,0 +1,15 @@
+/* Global design tokens */
+:root{
+  --gold:#C9A84C;
+  --gold-light:#E8D5A3;
+  --rose:#C97B84;
+  --navy:#1A1F3A;
+  --navy-deep:#0D1124;
+  --cream:#FAF6EF;
+  --text-light:#F5F0E8;
+  --text-muted:#A09070;
+  --card-bg:rgba(255,255,255,0.06);
+  --border:rgba(201,168,76,0.25);
+  --safe-bottom:env(safe-area-inset-bottom,0px);
+  --safe-top:env(safe-area-inset-top,0px);
+}

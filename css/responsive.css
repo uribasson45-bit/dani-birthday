@@ -1,0 +1,24 @@
+/* ─── MOBILE ─── */
+@media(max-width:700px){
+  #pages-sidebar{width:160px}
+  #preview-pane{display:none}
+  .admin-topbar h1{font-size:15px}
+  .row2{grid-template-columns:1fr}
+  #side-progress{right:4px;padding:10px 5px;gap:6px}
+  .sp-pip{width:6px;height:6px}
+  .page{padding-right:40px}
+  /* FIX: larger video on mobile */
+  .el-video{width:min(600px,98vw);max-width:98vw}
+}
+@media(max-width:520px){
+  #pages-sidebar{display:none}
+  #editor-toolbar{gap:6px;padding:8px 10px}
+  .tool-btn{padding:6px 10px;font-size:11px}
+  .admin-topbar{padding:10px 12px;gap:8px}
+  #page-name-input{width:120px}
+  /* FIX: full-width video on small screens */
+  .el-video{width:100%;max-width:100%}
+}
+@supports(padding:max(0px)){
+  #nav{padding-bottom:max(20px,calc(12px + var(--safe-bottom)))}
+}
