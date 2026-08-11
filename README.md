@@ -20,59 +20,6 @@ http://127.0.0.1:5500/
 
 The current admin password is configured in `js/config.js`.
 
-## Project tree
-
-
-
-### Important script-order note
-
-`js/utils.js` is intentionally loaded before `js/state.js`. The default state creates
-IDs immediately with `uid()`. This dependency appeared automatically through function
-hoisting when everything lived inside one `<script>` block, but must be explicit after
-the refactor.
-
-## Important current architecture
-
-This is still a static front-end application. There is no backend in this refactor.
-
-Story state and uploaded media are persisted locally in the browser using **IndexedDB**:
-
-- story/page state is saved in the `state` object store
-- uploaded files are stored as binary `Blob`s in the `media` object store
-- story elements reference uploaded media through `mediaId`
-- old `localStorage` state using the key `birthday_story_v5` is migrated automatically when possible
-
-This is much better for large local files than base64 in `localStorage`, but it is still **device/browser-local storage**. Data saved on one computer does not automatically appear on another phone/computer.
-
-## Development rule
-
-When asking an AI to change the project:
-
-1. Give it `docs/AI_CONTEXT.md`.
-2. Tell it exactly which file(s) are involved.
-3. Ask it not to rewrite unrelated files.
-4. Preserve the script load order in `index.html` unless dependencies are intentionally redesigned.
-5. Test Viewer + Admin + refresh + mobile navigation after changes.
-
-## Git suggestion
-
-Create/use a dedicated refactor branch:
-
-```bash
-git switch -c refactor/project-structure
-```
-
-Then copy this project into the repository, test locally, and commit:
-
-```bash
-git status
-git add .
-git commit -m "refactor: split birthday story into project structure"
-git push -u origin refactor/project-structure
-```
-
-Do not merge to the production branch until the existing behavior has been tested.
-
 
 ## Project tree
 
