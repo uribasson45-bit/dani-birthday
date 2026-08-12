@@ -16,7 +16,6 @@ http://127.0.0.1:5500/
 ```
 
 The current admin password is configured in `js/config.js`.
-
 ## Project tree
 
 Daniel-birthday-refactored/
