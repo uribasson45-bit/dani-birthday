@@ -5,9 +5,6 @@ Interactive birthday-story website with two modes:
 - **Client / Viewer mode** — the default experience seen by the birthday recipient.
 - **Admin / Editor mode** — opened from the gear icon and used to create/edit pages and media.
 
-This branch is a **structural refactor of the original single HTML file**.  
-The goal was to split the application into understandable files **without intentionally changing its existing behavior**.
-
 ## Quick start
 
 Open the project folder in VS Code and run `index.html` with Live Server.
@@ -19,8 +16,6 @@ http://127.0.0.1:5500/
 ```
 
 The current admin password is configured in `js/config.js`.
-
-
 ## Project tree
 
 Daniel-birthday-refactored/
