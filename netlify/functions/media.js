@@ -1,4 +1,6 @@
-import { getDeployStore } from "@netlify/blobs";
+import { getStore } from "@netlify/blobs";
+
+const STORE_NAME = "birthday-media";
 
 export default async (request) => {
   try {
@@ -11,7 +13,7 @@ export default async (request) => {
       });
     }
 
-    const store = getDeployStore();
+    const store = getStore(STORE_NAME);
 
     const blob = await store.get(key, {
       type: "blob",
@@ -27,11 +29,8 @@ export default async (request) => {
     return new Response(blob, {
       status: 200,
       headers: {
-        "Content-Type":
-          blob.type || "application/octet-stream",
-
-        "Cache-Control":
-          "public, max-age=31536000, immutable",
+        "Content-Type": blob.type || "application/octet-stream",
+        "Cache-Control": "public, max-age=3600",
       },
     });
   } catch (error) {
