@@ -5,14 +5,12 @@ const STORE_NAME = "birthday-story";
 const STORY_KEY = "main-story";
 
 export default async (request) => {
-  const store = getStore({
-    name: STORE_NAME,
-    consistency: "strong",
-  });
+  const store = getStore(STORE_NAME);
 
   if (request.method === "GET") {
     const story = await store.get(STORY_KEY, {
       type: "json",
+      consistency:"strong",
     });
 
     if (!story) {
