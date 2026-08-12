@@ -92,15 +92,48 @@ function serializableState() {
 
 function saveState() {
   applyPageName();
-  return idbSet(IDB_STATE_STORE, STATE_KEY, serializableState()).then(function() {
-    notify('נשמר! ✓');
+
+  var data = serializableState();
+
+  return fetch('/.netlify/functions/story', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+  })
+  .then(function(response) {
+    if (!response.ok) {
+      throw new Error('Cloud save failed: ' + response.status);
+    }
+
+    return response.json();
+  })
+  .then(function(result) {
+    if (!result || result.success !== true) {
+      throw new Error('Cloud save rejected');
+    }
+
+    // Keep a local cache too.
+    return idbSet(
+      IDB_STATE_STORE,
+      STATE_KEY,
+      data
+    );
+  })
+  .then(function() {
+    notify('נשמר בענן! ✓');
     return true;
-  }).catch(function(e) {
-    console.warn('save failed', e);
-    notify('שגיאה בשמירה');
+  })
+  .catch(function(error) {
+    console.warn('saveState failed', error);
+
+    notify('שגיאה בשמירה לענן');
+
     return false;
   });
 }
+
 
 // One-time migration: pull any pre-existing localStorage save (old base64 format)
 // into the new IndexedDB + blob-store format, so nobody loses their story.
@@ -145,23 +178,123 @@ function migrateFromLocalStorage() {
   });
 }
 
-function loadState() {
-  return openDB().catch(function() { return null; }).then(function(db) {
-    if (!db) { // IndexedDB unavailable (very old browser) - fallback to legacy localStorage read-only
-      try {
-        var raw = localStorage.getItem(OLD_STORAGE_KEY);
-        if (raw) { var parsed = JSON.parse(raw); if (parsed && parsed.pages) state = parsed; }
-      } catch(e) {}
-      return;
-    }
-    return idbGet(IDB_STATE_STORE, STATE_KEY).then(function(saved) {
-      if (saved && Array.isArray(saved.pages)) {
-        state = saved;
-        state.pages.forEach(function(p) { ensureBackground(p); (p.elements||[]).forEach(ensureStyle); });
+function loadLocalState() {
+  return openDB()
+    .catch(function() {
+      return null;
+    })
+    .then(function(db) {
+
+      if (!db) {
+
+        // Very old browser fallback.
+        try {
+          var raw =
+            localStorage.getItem(
+              OLD_STORAGE_KEY
+            );
+
+          if (raw) {
+            var parsed =
+              JSON.parse(raw);
+
+            if (
+              parsed &&
+              Array.isArray(parsed.pages)
+            ) {
+              state = parsed;
+            }
+          }
+        } catch (e) {}
+
         return;
       }
-      // nothing in IDB yet -> attempt migration from old localStorage save
-      return migrateFromLocalStorage();
+
+      return idbGet(
+        IDB_STATE_STORE,
+        STATE_KEY
+      ).then(function(saved) {
+
+        if (
+          saved &&
+          Array.isArray(saved.pages)
+        ) {
+          state = saved;
+
+          state.pages.forEach(function(page) {
+            ensureBackground(page);
+
+            (page.elements || [])
+              .forEach(ensureStyle);
+          });
+
+          return;
+        }
+
+        // Nothing in IndexedDB:
+        // try the old localStorage migration.
+        return migrateFromLocalStorage();
+      });
     });
-  }).catch(function(e) { console.warn('loadState failed', e); });
+}
+function loadState() {
+
+  // 1. First try the shared cloud story.
+  return fetch('/.netlify/functions/story', {
+    method: 'GET',
+    cache: 'no-store'
+  })
+  .then(function(response) {
+    if (!response.ok) {
+      throw new Error(
+        'Cloud load failed: ' + response.status
+      );
+    }
+
+    return response.json();
+  })
+  .then(function(result) {
+
+    if (
+      result &&
+      result.exists &&
+      result.story &&
+      Array.isArray(result.story.pages)
+    ) {
+
+      state = result.story;
+
+      state.pages.forEach(function(page) {
+        ensureBackground(page);
+
+        (page.elements || []).forEach(function(element) {
+          ensureStyle(element);
+        });
+      });
+
+      // Save cloud state as local offline cache.
+      return idbSet(
+        IDB_STATE_STORE,
+        STATE_KEY,
+        serializableState()
+      ).catch(function() {
+        // Cache failure must not prevent the site loading.
+      });
+    }
+
+    /*
+     * Cloud is reachable but no story has been saved yet.
+     * Fall back to the existing local story.
+     */
+    return loadLocalState();
+  })
+  .catch(function(error) {
+
+    console.warn(
+      'Cloud unavailable, using local cache',
+      error
+    );
+
+    return loadLocalState();
+  });
 }
