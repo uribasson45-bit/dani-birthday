@@ -340,3 +340,273 @@ document.getElementById('del-page-btn').addEventListener('click', function(ev) {
   renderAdminSidebar();
   renderEditor();
 });
+
+// ============================================================
+// TEMPORARY MEDIA MIGRATION SCAN BUTTON
+// ============================================================
+
+function ensureMediaMigrationScanButton() {
+  if (
+    document.getElementById(
+      'media-migration-scan-btn'
+    )
+  ) {
+    return;
+  }
+
+  var saveBtn =
+    document.getElementById(
+      'save-btn'
+    );
+
+  if (!saveBtn) return;
+
+  var btn =
+    document.createElement(
+      'button'
+    );
+
+  btn.type =
+    'button';
+
+  btn.id =
+    'media-migration-scan-btn';
+
+  btn.className =
+    saveBtn.className || 'btn-sm';
+
+  btn.textContent =
+    '☁️ בדוק מדיה מקומית';
+
+  btn.style.marginInlineStart =
+    '8px';
+
+  saveBtn.parentNode.insertBefore(
+    btn,
+    saveBtn.nextSibling
+  );
+
+
+  btn.addEventListener(
+    'click',
+    async function(ev) {
+
+      ev.preventDefault();
+
+      if (
+        typeof scanLocalMediaForMigration !==
+        'function'
+      ) {
+        alert(
+          'פונקציית בדיקת המדיה לא נמצאה'
+        );
+
+        return;
+      }
+
+
+      btn.disabled =
+        true;
+
+      var oldText =
+        btn.textContent;
+
+      btn.textContent =
+        '⏳ בודק...';
+
+
+      try {
+
+        var results =
+          await scanLocalMediaForMigration();
+
+
+        if (!results) {
+          return;
+        }
+
+
+        var total =
+          results.length;
+
+
+        var existing =
+          results.filter(
+            function(item) {
+              return item.exists;
+            }
+          );
+
+
+        var missing =
+          results.filter(
+            function(item) {
+              return !item.exists;
+            }
+          );
+
+
+        var images =
+          existing.filter(
+            function(item) {
+
+              return (
+                item.type === 'image' ||
+                item.type === 'background'
+              );
+            }
+          );
+
+
+        var audio =
+          existing.filter(
+            function(item) {
+
+              return (
+                item.type === 'audio'
+              );
+            }
+          );
+
+
+        var largest =
+          null;
+
+
+        existing.forEach(
+          function(item) {
+
+            if (
+              !largest ||
+              item.size >
+              largest.size
+            ) {
+              largest =
+                item;
+            }
+          }
+        );
+
+
+        var message =
+
+          'בדיקת המדיה הסתיימה ✅\n\n' +
+
+          'סה"כ הפניות למדיה: ' +
+          total +
+          '\n' +
+
+          'נמצאו במכשיר: ' +
+          existing.length +
+          '\n' +
+
+          'חסרים במכשיר: ' +
+          missing.length +
+          '\n\n' +
+
+          'תמונות / רקעים: ' +
+          images.length +
+          '\n' +
+
+          'קטעי אודיו: ' +
+          audio.length +
+          '\n';
+
+
+        if (largest) {
+
+          message +=
+
+            '\nהקובץ הגדול ביותר: ' +
+            largest.sizeMB +
+            'MB';
+
+
+          if (largest.fileName) {
+
+            message +=
+              '\nשם: ' +
+              largest.fileName;
+          }
+
+
+          message +=
+            '\nמיקום: ' +
+            largest.location;
+        }
+
+
+        if (
+          missing.length > 0
+        ) {
+
+          message +=
+            '\n\n⚠️ קבצים חסרים:';
+
+
+          missing.slice(
+            0,
+            10
+          ).forEach(
+            function(item) {
+
+              message +=
+                '\n- ' +
+                item.location +
+                ' (' +
+                item.mediaId +
+                ')';
+            }
+          );
+
+
+          if (
+            missing.length > 10
+          ) {
+
+            message +=
+              '\n... ועוד ' +
+              (
+                missing.length -
+                10
+              );
+          }
+        }
+
+
+        alert(
+          message
+        );
+
+
+        console.log(
+          'MEDIA MIGRATION SCAN RESULTS:',
+          results
+        );
+
+      } catch (error) {
+
+        console.error(
+          'Media migration scan failed:',
+          error
+        );
+
+        alert(
+          'שגיאה בבדיקת המדיה המקומית'
+        );
+
+      } finally {
+
+        btn.disabled =
+          false;
+
+        btn.textContent =
+          oldText;
+      }
+    }
+  );
+}
+
+
+// Create the button when admin.js loads.
+ensureMediaMigrationScanButton();
