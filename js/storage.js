@@ -298,3 +298,131 @@ function loadState() {
     return loadLocalState();
   });
 }
+
+function resolveCloudMediaUrl(mediaKey){
+  if (!mediaKey) return null;
+  return(
+    '/.netlify/functions/media?key=' + 
+    encodeURIComponent(mediaKey)
+  );
+}
+
+// ============================================================
+// MEDIA MIGRATION SCAN
+// ============================================================
+
+async function scanLocalMediaForMigration() {
+  var found = [];
+  var seen = {};
+
+  function addMedia(mediaId, type, fileName, location) {
+    if (!mediaId || seen[mediaId]) return;
+
+    seen[mediaId] = true;
+
+    found.push({
+      mediaId: mediaId,
+      type: type,
+      fileName: fileName || '',
+      location: location || ''
+    });
+  }
+
+  state.pages.forEach(function(page, pageIndex) {
+
+    // Background image
+    if (
+      page.background &&
+      page.background.mediaId
+    ) {
+      addMedia(
+        page.background.mediaId,
+        'background',
+        '',
+        'עמוד ' + (pageIndex + 1) + ' - רקע'
+      );
+    }
+
+    // Page elements
+    (page.elements || []).forEach(function(el, elementIndex) {
+
+      if (!el.mediaId) return;
+
+      addMedia(
+        el.mediaId,
+        el.type,
+        el.fileName || '',
+        'עמוד ' +
+          (pageIndex + 1) +
+          ' - אלמנט ' +
+          (elementIndex + 1)
+      );
+    });
+  });
+
+
+  var results = [];
+
+  for (var i = 0; i < found.length; i++) {
+
+    var item = found[i];
+
+    try {
+
+      var blob = await idbGet(
+        IDB_MEDIA_STORE,
+        item.mediaId
+      );
+
+      if (!blob) {
+
+        results.push({
+          mediaId: item.mediaId,
+          type: item.type,
+          fileName: item.fileName,
+          location: item.location,
+          exists: false,
+          size: 0,
+          sizeMB: 0,
+          mimeType: ''
+        });
+
+        continue;
+      }
+
+
+      results.push({
+        mediaId: item.mediaId,
+        type: item.type,
+        fileName: item.fileName,
+        location: item.location,
+        exists: true,
+        size: blob.size,
+        sizeMB: Number(
+          (
+            blob.size /
+            1024 /
+            1024
+          ).toFixed(2)
+        ),
+        mimeType: blob.type || ''
+      });
+
+    } catch (error) {
+
+      results.push({
+        mediaId: item.mediaId,
+        type: item.type,
+        fileName: item.fileName,
+        location: item.location,
+        exists: false,
+        error: String(error)
+      });
+    }
+  }
+
+
+  console.table(results);
+
+  return results;
+}
