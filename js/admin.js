@@ -610,3 +610,297 @@ function ensureMediaMigrationScanButton() {
 
 // Create the button when admin.js loads.
 ensureMediaMigrationScanButton();
+
+// ============================================================
+// MEDIA MIGRATION UPLOAD BUTTON
+// ============================================================
+
+function ensureMediaMigrationUploadButton() {
+  if (
+    document.getElementById(
+      'media-migration-upload-btn'
+    )
+  ) {
+    return;
+  }
+
+
+  var scanBtn =
+    document.getElementById(
+      'media-migration-scan-btn'
+    );
+
+  var saveBtn =
+    document.getElementById(
+      'save-btn'
+    );
+
+
+  if (!saveBtn) return;
+
+
+  var btn =
+    document.createElement(
+      'button'
+    );
+
+
+  btn.type =
+    'button';
+
+
+  btn.id =
+    'media-migration-upload-btn';
+
+
+  btn.className =
+    saveBtn.className ||
+    'btn-sm';
+
+
+  btn.textContent =
+    '☁️ העבר מדיה לענן';
+
+
+  btn.style.marginInlineStart =
+    '8px';
+
+
+  /*
+   * Put it after the scan button if the scan button exists.
+   * Otherwise place it after Save.
+   */
+  if (
+    scanBtn &&
+    scanBtn.parentNode
+  ) {
+
+    scanBtn.parentNode.insertBefore(
+      btn,
+      scanBtn.nextSibling
+    );
+
+  } else {
+
+    saveBtn.parentNode.insertBefore(
+      btn,
+      saveBtn.nextSibling
+    );
+  }
+
+
+  btn.addEventListener(
+    'click',
+    async function(ev) {
+
+      ev.preventDefault();
+
+
+      if (
+        typeof migrateAllLocalMediaToCloud !==
+        'function'
+      ) {
+
+        alert(
+          'פונקציית העברת המדיה לא נמצאה'
+        );
+
+        return;
+      }
+
+
+      var ok =
+        confirm(
+          'להעביר עכשיו את כל המדיה המקומית לענן?\n\n' +
+          'התהליך יכול לקחת כמה דקות.\n' +
+          'נא לא לסגור את האתר בזמן ההעלאה.'
+        );
+
+
+      if (!ok) return;
+
+
+      btn.disabled =
+        true;
+
+
+      if (scanBtn) {
+        scanBtn.disabled =
+          true;
+      }
+
+
+      var oldText =
+        btn.textContent;
+
+
+      try {
+
+        btn.textContent =
+          '⏳ מתחיל...';
+
+
+        var result =
+          await migrateAllLocalMediaToCloud(
+            function(progress) {
+
+              var current =
+                progress.current ||
+                0;
+
+              var total =
+                progress.total ||
+                0;
+
+
+              if (
+                progress.status ===
+                'reading'
+              ) {
+
+                btn.textContent =
+                  '📂 קורא ' +
+                  current +
+                  '/' +
+                  total;
+              }
+
+
+              else if (
+                progress.status ===
+                'preparing'
+              ) {
+
+                btn.textContent =
+                  '🗜️ מכין ' +
+                  current +
+                  '/' +
+                  total;
+              }
+
+
+              else if (
+                progress.status ===
+                'uploading'
+              ) {
+
+                btn.textContent =
+                  '☁️ מעלה ' +
+                  current +
+                  '/' +
+                  total;
+              }
+
+
+              else if (
+                progress.status ===
+                'done'
+              ) {
+
+                btn.textContent =
+                  '✅ הועלה ' +
+                  current +
+                  '/' +
+                  total;
+              }
+
+
+              else if (
+                progress.status ===
+                'error'
+              ) {
+
+                btn.textContent =
+                  '⚠️ שגיאה ' +
+                  current +
+                  '/' +
+                  total;
+              }
+            }
+          );
+
+
+        var message =
+
+          'העברת המדיה הסתיימה ✅\n\n' +
+
+          'סה"כ: ' +
+          result.total +
+          '\n' +
+
+          'הועלו בהצלחה: ' +
+          result.success +
+          '\n' +
+
+          'נכשלו: ' +
+          result.failed;
+
+
+        if (
+          result.failed === 0
+        ) {
+
+          message +=
+            '\n\n🎉 כל המדיה הועברה לענן בהצלחה.';
+
+        } else {
+
+          message +=
+            '\n\n⚠️ חלק מהקבצים לא הועלו. אל תמחק שום דבר מהמכשיר עדיין.';
+        }
+
+
+        alert(
+          message
+        );
+
+
+        console.log(
+          'MEDIA MIGRATION RESULT:',
+          result
+        );
+
+
+        /*
+         * Refresh editor so cloud-backed
+         * previews are immediately used.
+         */
+        renderEditor();
+
+
+      } catch (error) {
+
+        console.error(
+          'Media migration failed:',
+          error
+        );
+
+
+        alert(
+          'העברת המדיה נכשלה:\n\n' +
+          String(error)
+        );
+
+
+      } finally {
+
+        btn.disabled =
+          false;
+
+
+        if (scanBtn) {
+          scanBtn.disabled =
+            false;
+        }
+
+
+        btn.textContent =
+          oldText;
+      }
+    }
+  );
+}
+
+
+// Create the upload button.
+ensureMediaMigrationUploadButton();
