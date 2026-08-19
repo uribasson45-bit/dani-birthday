@@ -426,3 +426,682 @@ async function scanLocalMediaForMigration() {
 
   return results;
 }
+
+// ============================================================
+// CLOUD MEDIA MIGRATION
+// ============================================================
+
+function getMigrationExtension(blob, fileName) {
+  var type = (blob && blob.type) || '';
+
+  var map = {
+    'image/jpeg': 'jpg',
+    'image/jpg': 'jpg',
+    'image/png': 'png',
+    'image/webp': 'webp',
+    'image/gif': 'gif',
+
+    'audio/mpeg': 'mp3',
+    'audio/mp3': 'mp3',
+    'audio/mp4': 'm4a',
+    'audio/x-m4a': 'm4a',
+    'audio/wav': 'wav',
+    'audio/x-wav': 'wav',
+    'audio/ogg': 'ogg'
+  };
+
+  if (map[type]) {
+    return map[type];
+  }
+
+  if (
+    fileName &&
+    fileName.indexOf('.') !== -1
+  ) {
+    return fileName
+      .split('.')
+      .pop()
+      .toLowerCase();
+  }
+
+  return 'bin';
+}
+
+
+// ============================================================
+// COMPRESS LARGE IMAGES
+// ============================================================
+
+function compressImageForCloud(blob) {
+  return new Promise(function(resolve) {
+
+    /*
+     * Small images can be uploaded unchanged.
+     */
+    if (
+      !blob ||
+      !blob.type ||
+      blob.type.indexOf('image/') !== 0 ||
+      blob.size < 3.5 * 1024 * 1024
+    ) {
+      resolve(blob);
+      return;
+    }
+
+
+    var objectUrl =
+      URL.createObjectURL(blob);
+
+    var img =
+      new Image();
+
+
+    img.onload =
+      function() {
+
+        try {
+
+          var maxDimension = 2200;
+
+          var width =
+            img.naturalWidth;
+
+          var height =
+            img.naturalHeight;
+
+
+          if (
+            width > maxDimension ||
+            height > maxDimension
+          ) {
+
+            var ratio =
+              Math.min(
+                maxDimension / width,
+                maxDimension / height
+              );
+
+            width =
+              Math.round(
+                width * ratio
+              );
+
+            height =
+              Math.round(
+                height * ratio
+              );
+          }
+
+
+          var canvas =
+            document.createElement(
+              'canvas'
+            );
+
+          canvas.width =
+            width;
+
+          canvas.height =
+            height;
+
+
+          var ctx =
+            canvas.getContext(
+              '2d'
+            );
+
+          ctx.drawImage(
+            img,
+            0,
+            0,
+            width,
+            height
+          );
+
+
+          canvas.toBlob(
+            function(compressedBlob) {
+
+              URL.revokeObjectURL(
+                objectUrl
+              );
+
+              if (
+                compressedBlob &&
+                compressedBlob.size <
+                blob.size
+              ) {
+
+                console.log(
+                  'Compressed image:',
+                  (
+                    blob.size /
+                    1024 /
+                    1024
+                  ).toFixed(2) +
+                  'MB → ' +
+                  (
+                    compressedBlob.size /
+                    1024 /
+                    1024
+                  ).toFixed(2) +
+                  'MB'
+                );
+
+                resolve(
+                  compressedBlob
+                );
+
+              } else {
+
+                resolve(blob);
+              }
+            },
+
+            'image/jpeg',
+            0.82
+          );
+
+        } catch (error) {
+
+          console.warn(
+            'Image compression failed:',
+            error
+          );
+
+          URL.revokeObjectURL(
+            objectUrl
+          );
+
+          resolve(blob);
+        }
+      };
+
+
+    img.onerror =
+      function() {
+
+        URL.revokeObjectURL(
+          objectUrl
+        );
+
+        resolve(blob);
+      };
+
+
+    img.src =
+      objectUrl;
+  });
+}
+
+
+// ============================================================
+// UPLOAD ONE BLOB TO NETLIFY
+// ============================================================
+
+async function uploadMediaBlobToCloud(
+  key,
+  blob
+) {
+
+  var response =
+    await fetch(
+      '/.netlify/functions/upload-media?key=' +
+      encodeURIComponent(key),
+      {
+        method: 'POST',
+
+        headers: {
+          'Content-Type':
+            blob.type ||
+            'application/octet-stream'
+        },
+
+        body: blob
+      }
+    );
+
+
+  if (!response.ok) {
+
+    var text = '';
+
+    try {
+      text =
+        await response.text();
+    } catch (e) {}
+
+
+    throw new Error(
+      'Upload failed (' +
+      response.status +
+      '): ' +
+      text
+    );
+  }
+
+
+  return response.json();
+}
+
+
+// ============================================================
+// COLLECT MEDIA REFERENCES
+// ============================================================
+
+function collectMediaMigrationItems() {
+  var items = [];
+  var seen = {};
+
+
+  function add(
+    mediaId,
+    type,
+    fileName
+  ) {
+
+    if (
+      !mediaId ||
+      seen[mediaId]
+    ) {
+      return;
+    }
+
+
+    seen[mediaId] =
+      true;
+
+
+    items.push({
+      mediaId: mediaId,
+      type: type,
+      fileName: fileName || ''
+    });
+  }
+
+
+  state.pages.forEach(
+    function(page) {
+
+      if (
+        page.background &&
+        page.background.mediaId
+      ) {
+
+        add(
+          page.background.mediaId,
+          'background',
+          ''
+        );
+      }
+
+
+      (
+        page.elements ||
+        []
+      ).forEach(
+        function(el) {
+
+          if (
+            el.mediaId
+          ) {
+
+            add(
+              el.mediaId,
+              el.type,
+              el.fileName || ''
+            );
+          }
+        }
+      );
+    }
+  );
+
+
+  return items;
+}
+
+
+// ============================================================
+// APPLY MEDIA KEY TO STORY
+// ============================================================
+
+function applyMigratedMediaKey(
+  mediaId,
+  mediaKey
+) {
+
+  state.pages.forEach(
+    function(page) {
+
+      // Background
+      if (
+        page.background &&
+        page.background.mediaId ===
+          mediaId
+      ) {
+
+        page.background.mediaKey =
+          mediaKey;
+
+        /*
+         * Keep mediaId temporarily as fallback.
+         * mediaKey has priority in the new frontend.
+         */
+      }
+
+
+      // Elements
+      (
+        page.elements ||
+        []
+      ).forEach(
+        function(el) {
+
+          if (
+            el.mediaId ===
+            mediaId
+          ) {
+
+            el.mediaKey =
+              mediaKey;
+          }
+        }
+      );
+    }
+  );
+}
+
+
+// ============================================================
+// MIGRATE ALL EXISTING MEDIA
+// ============================================================
+
+async function migrateAllLocalMediaToCloud(
+  onProgress
+) {
+
+  var items =
+    collectMediaMigrationItems();
+
+
+  if (!items.length) {
+
+    throw new Error(
+      'לא נמצאה מדיה מקומית להעברה'
+    );
+  }
+
+
+  var results = [];
+
+  var successCount = 0;
+  var failedCount = 0;
+
+
+  for (
+    var i = 0;
+    i < items.length;
+    i++
+  ) {
+
+    var item =
+      items[i];
+
+
+    if (onProgress) {
+
+      onProgress({
+        current: i + 1,
+        total: items.length,
+        item: item,
+        status: 'reading'
+      });
+    }
+
+
+    try {
+
+      // ----------------------------------------------
+      // READ FROM INDEXEDDB
+      // ----------------------------------------------
+
+      var blob =
+        await idbGet(
+          IDB_MEDIA_STORE,
+          item.mediaId
+        );
+
+
+      if (!blob) {
+
+        throw new Error(
+          'הקובץ לא נמצא ב-IndexedDB'
+        );
+      }
+
+
+      // ----------------------------------------------
+      // COMPRESS LARGE IMAGES
+      // ----------------------------------------------
+
+      var uploadBlob =
+        blob;
+
+
+      if (
+        item.type === 'image' ||
+        item.type === 'background'
+      ) {
+
+        if (onProgress) {
+
+          onProgress({
+            current: i + 1,
+            total: items.length,
+            item: item,
+            status: 'preparing'
+          });
+        }
+
+
+        uploadBlob =
+          await compressImageForCloud(
+            blob
+          );
+      }
+
+
+      // ----------------------------------------------
+      // DETERMINE EXTENSION
+      // ----------------------------------------------
+
+      var extension =
+        getMigrationExtension(
+          uploadBlob,
+          item.fileName
+        );
+
+
+      /*
+       * If compression converted the image to JPEG,
+       * force .jpg.
+       */
+      if (
+        uploadBlob.type ===
+        'image/jpeg'
+      ) {
+
+        extension =
+          'jpg';
+      }
+
+
+      var folder =
+        'other';
+
+
+      if (
+        item.type === 'image' ||
+        item.type === 'background'
+      ) {
+
+        folder =
+          'images';
+      }
+
+
+      else if (
+        item.type === 'audio'
+      ) {
+
+        folder =
+          'audio';
+      }
+
+
+      var mediaKey =
+        folder +
+        '/' +
+        item.mediaId +
+        '.' +
+        extension;
+
+
+      // ----------------------------------------------
+      // UPLOAD
+      // ----------------------------------------------
+
+      if (onProgress) {
+
+        onProgress({
+          current: i + 1,
+          total: items.length,
+          item: item,
+          status: 'uploading',
+          mediaKey: mediaKey
+        });
+      }
+
+
+      var response =
+        await uploadMediaBlobToCloud(
+          mediaKey,
+          uploadBlob
+        );
+
+
+      // ----------------------------------------------
+      // UPDATE STORY
+      // ----------------------------------------------
+
+      applyMigratedMediaKey(
+        item.mediaId,
+        mediaKey
+      );
+
+
+      successCount++;
+
+
+      results.push({
+        success: true,
+
+        mediaId:
+          item.mediaId,
+
+        mediaKey:
+          mediaKey,
+
+        originalSize:
+          blob.size,
+
+        uploadedSize:
+          uploadBlob.size,
+
+        response:
+          response
+      });
+
+
+      console.log(
+        '✓ Migrated',
+        item.mediaId,
+        '→',
+        mediaKey
+      );
+
+
+      if (onProgress) {
+
+        onProgress({
+          current: i + 1,
+          total: items.length,
+          item: item,
+          status: 'done',
+          mediaKey: mediaKey
+        });
+      }
+
+
+    } catch (error) {
+
+      failedCount++;
+
+
+      console.error(
+        'Migration failed:',
+        item.mediaId,
+        error
+      );
+
+
+      results.push({
+        success: false,
+        mediaId:
+          item.mediaId,
+        error:
+          String(error)
+      });
+
+
+      if (onProgress) {
+
+        onProgress({
+          current: i + 1,
+          total: items.length,
+          item: item,
+          status: 'error',
+          error: error
+        });
+      }
+    }
+  }
+
+
+  // ==========================================================
+  // SAVE UPDATED STORY TO CLOUD
+  // ==========================================================
+
+  if (
+    successCount > 0
+  ) {
+
+    await saveState();
+  }
+
+
+  return {
+    total:
+      items.length,
+
+    success:
+      successCount,
+
+    failed:
+      failedCount,
+
+    results:
+      results
+  };
+}
